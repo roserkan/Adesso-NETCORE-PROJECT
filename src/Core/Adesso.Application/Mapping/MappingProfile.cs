@@ -11,6 +11,9 @@ using Adesso.Application.Features.Commands.Category.Update;
 using Adesso.Application.Features.Commands.Product.Create;
 using Adesso.Application.Features.Commands.Product.Delete;
 using Adesso.Application.Features.Commands.Product.Update;
+using Adesso.Application.Features.Commands.User.Create;
+using Adesso.Application.Features.Commands.User.Delete;
+using Adesso.Application.Features.Commands.User.Update;
 using Adesso.Domain.Models;
 using AutoMapper;
 
@@ -38,9 +41,10 @@ public class MappingProfile : Profile
 
 
         CreateMap<User, UserDto>().ReverseMap();
-        //CreateMap<User, CreateUserCommand>().ReverseMap();
-        //CreateMap<User, UpdateUserCommand>().ReverseMap();
-        //CreateMap<User, DeleteUserCommand>().ReverseMap();
+        CreateMap<User, LoginUserDto>().ReverseMap();
+        CreateMap<User, CreateUserCommand>().ReverseMap();
+        CreateMap<User, UpdateUserCommand>().ReverseMap();
+        CreateMap<User, DeleteUserCommand>().ReverseMap();
 
         CreateMap<UserDetail, UserDetailDto>().ReverseMap();
         //CreateMap<UserDetail, CreateUserDetailCommand>().ReverseMap();

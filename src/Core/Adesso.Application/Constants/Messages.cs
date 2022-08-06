@@ -49,6 +49,7 @@ public static class Messages
     public static string UserEmailAddressNotValid = "E-posta geçersiz!";
     public static string UserPasswordMinLen = "Şifre en az 6 karakter uzunluğunda olmalı!";
     public static string UserPasswordMaxLen = "Şifre en fazla 16 karakter uzunluğunda olmalı!";
+    public static string PasswordWrongError = "Şifre hatalı!";
 
 
     // Money Point
