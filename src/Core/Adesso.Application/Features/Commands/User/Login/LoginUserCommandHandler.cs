@@ -47,29 +47,4 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, IDataRe
 
 
     }
-
-    //public async Task<LoginUserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
-    //{
-    //    var dbUser = await _unitOfWork.GetRepository<Domain.Models.User>().GetSingleAsync(i => i.EmailAddress == request.EmailAddress);
-    //    if (dbUser == null)
-    //        throw new DatabaseValidationException(Messages.UserNotFound);
-
-    //    var encryptedPassword = PasswordEncryptor.Encrypt(request.Password);
-    //    if (dbUser.Password != encryptedPassword)
-    //        throw new DatabaseValidationException(Messages.PasswordWrongError);
-
-
-
-    //    var result = _mapper.Map<LoginUserDto>(dbUser);
-
-    //    var claims = CreateClaimHelper.CreateClaim(dbUser);
-
-
-    //    result.Token = GenerateTokenHelper.GenerateToken(claims, _configuration);
-
-    //    return result;
-
-    //}
-
-
 }
