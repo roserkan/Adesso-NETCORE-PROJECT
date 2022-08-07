@@ -1,5 +1,6 @@
 ﻿using Adesso.Application.Constants;
 using Adesso.Application.Dtos.User;
+using Adesso.Application.Features.Queries.User;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
 using AutoMapper;

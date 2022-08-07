@@ -56,7 +56,16 @@ public static class Messages
 
 
     // Money Point
+    public static string MoneyPointCreated = "Para puan başarıyla eklenmiştir!";
+    public static string MoneyPointUpdated = "Para puan başarıyla günellenmiştir!";
+    public static string MoneyPointDeleted = "Para puan silinmiştir!";
+
     public static string MoneyPointNotFound = "Para puan bulunamadı!";
+    public static string MoneyPointCategoryIdAldreadyExist = "Bu kategoriye ait puan zaten tanımlı!";
+
+    public static string MoneyPointCategoryIdNotNull = "Böyle bir kategori yok!";
+    public static string MoneyPointPointNotNull = "Para puan boş olamaz!";
+    public static string MoneyPointPointMin = "Geçerli bir puan girin!";
 
 
 
@@ -74,6 +83,19 @@ public static class Messages
 
     // Authorization
     public static string AuthorizationDenied = "Yetkiniz yok!";
+
+    // Role
+    public static string RoleCreated = "Rol başarıyla eklenmiştir.";
+    public static string RoleUpdated = "Rol başarıyla güncellenmiştir.";
+    public static string RoleDeleted = "Rol başarıyla silinmiştir.";
+
+    public static string RoleNotFound = "Rol bulunamadı!";
+    public static string RoleNameAlreadyExist = "Rol zaten var!";
+
+
+    public static string RoleNameMinLen = "Rol adı en az 2 karakter uzunluğunda olmalı!";
+    public static string RoleNameMaxLen = "Rol adı en fazla 24 karakter uzunluğunda olmalı!";
+    public static string RoleNameNotNull = "Rol adı boş olamaz!";
 
 
 }

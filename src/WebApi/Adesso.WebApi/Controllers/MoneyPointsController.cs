@@ -1,28 +1,31 @@
-﻿using Adesso.Application.Features.Commands.Category.Create;
-using Adesso.Application.Features.Commands.Category.Delete;
+﻿using Adesso.Application.Features.Commands.Category.Delete;
 using Adesso.Application.Features.Commands.Category.Update;
-using Adesso.Application.Features.Queries.Category;
+using Adesso.Application.Features.Commands.MoneyPoint.Create;
+using Adesso.Application.Features.Commands.MoneyPoint.Delete;
+using Adesso.Application.Features.Commands.MoneyPoint.Update;
+using Adesso.Application.Features.Queries.MoneyPoint;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Adesso.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoriesController : BaseController
+public class MoneyPointsController : BaseController
 {
 
     private readonly IMediator _mediator;
 
-    public CategoriesController(IMediator mediator)
+    public MoneyPointsController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllCateories()
+    public async Task<IActionResult> GetAllMoneyPoints()
     {
-        var result = await _mediator.Send(new GetAllCategoriesQuerie());
+        var result = await _mediator.Send(new GetAllMoneyPointsQuerie());
         if (result.Success)
         {
             return Ok(result);
@@ -31,9 +34,9 @@ public class CategoriesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetCategoryById(int id)
+    public async Task<IActionResult> GetMoneyPointById(int id)
     {
-        var result = await _mediator.Send(new GetCategoryByIdQuerie(id));
+        var result = await _mediator.Send(new GetMoneyPointByIdQuerie(id));
         if (result.Success)
         {
             return Ok(result);
@@ -44,7 +47,7 @@ public class CategoriesController : BaseController
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
+    public async Task<IActionResult> CreateMoneyPoint([FromBody] CreateMoneyPointCommand command)
     {
         var result = await _mediator.Send(command);
 
@@ -56,7 +59,7 @@ public class CategoriesController : BaseController
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryCommand command)
+    public async Task<IActionResult> UpdateMoneyPoint(int id, [FromBody] UpdateMoneyPointCommand command)
     {
         command.Id = id;
         var result = await _mediator.Send(command);
@@ -72,7 +75,7 @@ public class CategoriesController : BaseController
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var command = new DeleteCategoryCommand(id);
+        var command = new DeleteMoneyPointCommand(id);
         var result = await _mediator.Send(command);
 
         if (result.Success)

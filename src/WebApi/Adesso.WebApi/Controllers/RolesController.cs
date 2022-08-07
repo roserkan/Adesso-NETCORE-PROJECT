@@ -1,7 +1,7 @@
-﻿using Adesso.Application.Features.Commands.Category.Create;
-using Adesso.Application.Features.Commands.Category.Delete;
-using Adesso.Application.Features.Commands.Category.Update;
-using Adesso.Application.Features.Queries.Category;
+﻿using Adesso.Application.Features.Commands.Role.Create;
+using Adesso.Application.Features.Commands.Role.Delete;
+using Adesso.Application.Features.Commands.Role.Update;
+using Adesso.Application.Features.Queries.Role;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,20 +9,20 @@ namespace Adesso.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CategoriesController : BaseController
+public class RolesController : BaseController
 {
 
     private readonly IMediator _mediator;
 
-    public CategoriesController(IMediator mediator)
+    public RolesController(IMediator mediator)
     {
         _mediator = mediator;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllCateories()
+    public async Task<IActionResult> GetAllRoless()
     {
-        var result = await _mediator.Send(new GetAllCategoriesQuerie());
+        var result = await _mediator.Send(new GetAllRolesQuerie());
         if (result.Success)
         {
             return Ok(result);
@@ -31,9 +31,9 @@ public class CategoriesController : BaseController
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetCategoryById(int id)
+    public async Task<IActionResult> GetRolesById(int id)
     {
-        var result = await _mediator.Send(new GetCategoryByIdQuerie(id));
+        var result = await _mediator.Send(new GetRoleByIdQuerie(id));
         if (result.Success)
         {
             return Ok(result);
@@ -44,7 +44,7 @@ public class CategoriesController : BaseController
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
+    public async Task<IActionResult> CreateRoles([FromBody] CreateRoleCommand command)
     {
         var result = await _mediator.Send(command);
 
@@ -56,7 +56,7 @@ public class CategoriesController : BaseController
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateCategory(int id, [FromBody] UpdateCategoryCommand command)
+    public async Task<IActionResult> UpdateRoles(int id, [FromBody] UpdateRoleCommand command)
     {
         command.Id = id;
         var result = await _mediator.Send(command);
@@ -72,7 +72,7 @@ public class CategoriesController : BaseController
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var command = new DeleteCategoryCommand(id);
+        var command = new DeleteRoleCommand(id);
         var result = await _mediator.Send(command);
 
         if (result.Success)

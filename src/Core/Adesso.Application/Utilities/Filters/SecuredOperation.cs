@@ -17,11 +17,6 @@ public class SecuredOperationAttribute : Attribute, IAuthorizationFilter
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        string filterString = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/roles";
-        // authorization
-        //var roleValue = roles.Where(i => i.ToString().Contains("role")).);
-
-        //var roles = context.HttpContext.User.Claims.Where(c => c.Type == filterString);
 
         var roles = context.HttpContext.User.Claims;
 
