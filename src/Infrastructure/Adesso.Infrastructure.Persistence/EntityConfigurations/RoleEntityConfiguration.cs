@@ -5,14 +5,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Adesso.Infrastructure.Persistence.EntityConfigurations;
 
-public class UserEntityConfiguration : BaseEntityConfiguration<User>
+public class RoleEntityConfiguration : BaseEntityConfiguration<Role>
 {
-    public override void Configure(EntityTypeBuilder<User> builder)
+    public override void Configure(EntityTypeBuilder<Role> builder)
     {
         base.Configure(builder);
 
-        builder.ToTable("Users", AdessoDbContext.DEFAULT_SCHEMA);
-
+        builder.ToTable("Roles", AdessoDbContext.DEFAULT_SCHEMA);
     }
 }
 

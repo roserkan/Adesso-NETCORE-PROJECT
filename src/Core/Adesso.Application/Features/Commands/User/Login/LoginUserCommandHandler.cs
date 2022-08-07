@@ -1,5 +1,4 @@
-﻿using Adesso.Application.Constants;
-using Adesso.Application.Dtos.User;
+﻿using Adesso.Application.Dtos.User;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
 using Adesso.Application.Utilities.Security;
@@ -8,6 +7,8 @@ using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using Adesso.Application.Constants;
 
 namespace Adesso.Application.Features.Commands.User.Login;
 
@@ -38,7 +39,17 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, IDataRe
 
         var result = _mapper.Map<LoginUserDto>(dbUser);
 
-        var claims = CreateClaimHelper.CreateClaim(dbUser);
+        var query =  _unitOfWork.GetRepository<Domain.Models.User>().AsQueryable();
+        var user = await query.Where(i => i.Id == dbUser.Id).Include(i => i.UserRole).SingleOrDefaultAsync();
+        var roleIds = user.UserRole.Select(i => i.RoleId).ToList();
+        var roleNames = new List<string>();
+        foreach (var roleId in roleIds)
+        {
+            var role = await _unitOfWork.GetRepository<Domain.Models.Role>().GetByIdAsync(roleId);
+            roleNames.Add(role.RoleName);
+        }
+        
+        var claims = CreateClaimHelper.CreateClaim(user, roleNames);
 
 
         result.Token = GenerateTokenHelper.GenerateToken(claims, _configuration);

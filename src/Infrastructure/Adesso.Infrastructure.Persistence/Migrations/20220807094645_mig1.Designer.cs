@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Adesso.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(AdessoDbContext))]
-    [Migration("20220806211916_mig1")]
+    [Migration("20220807094645_mig1")]
     partial class mig1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -161,6 +161,26 @@ namespace Adesso.Infrastructure.Persistence.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Adesso.Domain.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RoleName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles", "dbo");
+                });
+
             modelBuilder.Entity("Adesso.Domain.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -216,6 +236,33 @@ namespace Adesso.Infrastructure.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserDetails", "dbo");
+                });
+
+            modelBuilder.Entity("Adesso.Domain.Models.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreatedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserRoles", "dbo");
                 });
 
             modelBuilder.Entity("Adesso.Domain.Models.MoneyPoint", b =>
@@ -281,6 +328,25 @@ namespace Adesso.Infrastructure.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Adesso.Domain.Models.UserRole", b =>
+                {
+                    b.HasOne("Adesso.Domain.Models.Role", "Role")
+                        .WithMany("UserRole")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Adesso.Domain.Models.User", "User")
+                        .WithMany("UserRole")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Adesso.Domain.Models.Category", b =>
                 {
                     b.Navigation("MoneyPoint");
@@ -298,9 +364,16 @@ namespace Adesso.Infrastructure.Persistence.Migrations
                     b.Navigation("OrderItems");
                 });
 
+            modelBuilder.Entity("Adesso.Domain.Models.Role", b =>
+                {
+                    b.Navigation("UserRole");
+                });
+
             modelBuilder.Entity("Adesso.Domain.Models.User", b =>
                 {
                     b.Navigation("Orders");
+
+                    b.Navigation("UserRole");
                 });
 #pragma warning restore 612, 618
         }

@@ -2,7 +2,6 @@
 using Adesso.Application.Features.Queries.Order;
 using Adesso.Application.Utilities.Filters;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Adesso.WebApi.Controllers;
@@ -20,7 +19,7 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet]
-    [SecuredOperation("Admin")]
+    //[SecuredOperation("Admin")]
     public async Task<IActionResult> GetAllOrders()
     {
         var result = await _mediator.Send(new GetAllOrdersQuerie());
