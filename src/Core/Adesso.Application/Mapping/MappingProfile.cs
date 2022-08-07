@@ -8,6 +8,7 @@ using Adesso.Application.Dtos.UserDetail;
 using Adesso.Application.Features.Commands.Category.Create;
 using Adesso.Application.Features.Commands.Category.Delete;
 using Adesso.Application.Features.Commands.Category.Update;
+using Adesso.Application.Features.Commands.Order.Create;
 using Adesso.Application.Features.Commands.Product.Create;
 using Adesso.Application.Features.Commands.Product.Delete;
 using Adesso.Application.Features.Commands.Product.Update;
@@ -53,11 +54,14 @@ public class MappingProfile : Profile
 
 
         CreateMap<Order, OrderDto>().ReverseMap();
-        //CreateMap<Order, CreateOrderCommand>().ReverseMap();
+        CreateMap<Order, CreateOrderItemDto>().ReverseMap();
+        CreateMap<Order, CreateOrderCommand>().ReverseMap();
+
         //CreateMap<Order, UpdateOrderCommand>().ReverseMap();
         //CreateMap<Order, DeleteOrderCommand>().ReverseMap();
 
         CreateMap<OrderItem, OrderItemDto>().ReverseMap();
+
         //CreateMap<OrderItem, CreateOrderItemCommand>().ReverseMap();
         //CreateMap<OrderItem, UpdateOrderItemCommand>().ReverseMap();
         //CreateMap<OrderItem, DeleteOrderItemCommand>().ReverseMap();

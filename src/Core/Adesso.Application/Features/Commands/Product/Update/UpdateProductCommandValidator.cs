@@ -42,6 +42,14 @@ public class UpdateProductCommandValidator : AbstractValidatorCustom<UpdateProdu
         RuleFor(i => i.ImagePath)
        .MaximumLength(300)
        .WithMessage(Messages.ProductImagePathMaxLen);
+
+        RuleFor(i => i.Stock)
+        .NotNull()
+        .WithMessage(Messages.ProductStockNotNull);
+
+        RuleFor(i => i.Stock)
+        .GreaterThanOrEqualTo(0)
+        .WithMessage(Messages.ProductStockMin);
     }
 }
 

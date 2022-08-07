@@ -22,7 +22,8 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
     public virtual async Task<int> AddAsync(TEntity entity)
     {
         await this.entity.AddAsync(entity);
-        return await dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
+        return entity.Id;   
     }
 
     public virtual int Add(TEntity entity)

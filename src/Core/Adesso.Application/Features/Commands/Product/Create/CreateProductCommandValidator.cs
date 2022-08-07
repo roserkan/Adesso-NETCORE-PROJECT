@@ -39,5 +39,13 @@ public class CreateProductCommandValidator : AbstractValidatorCustom<CreateProdu
        .MaximumLength(300)
        .WithMessage(Messages.ProductImagePathMaxLen);
 
+        RuleFor(i => i.Stock)
+       .NotNull()
+       .WithMessage(Messages.ProductStockNotNull);
+
+        RuleFor(i => i.Stock)
+        .GreaterThanOrEqualTo(0)
+        .WithMessage(Messages.ProductStockMin);
+
     }
 }

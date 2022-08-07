@@ -35,6 +35,9 @@ public static class Messages
     public static string ProductIdNotFound = "Böyle bir ürün bulunmamaktadır!";
     public static string ProductImagePathMaxLen = "Görsel resmi çok büyük!";
     public static string ProductNameAlreadyExist = "Ürün zaten var!";
+    public static string ProductStockMin = "Geçerli bir ürün stok adedi giriniz!";
+    public static string ProductStockNotNull = "Stok adedi boş olamaz!";
+    public static string ProductStockError = "Ürün stokta yok!.";
 
 
 
@@ -59,6 +62,7 @@ public static class Messages
 
     // Order
     public static string OrderNotFound = "Sipariş bulunamadı!";
+    public static string OrderSuccess = "Sipariş işlemi başarılı.";
 
     // Order
     public static string OrderItemNotFound = "Sipariş ürünü bulunamadı!";
@@ -66,6 +70,10 @@ public static class Messages
 
     // UserDetail
     public static string UserDetailNotFound = "Kullanıcı bulunamadı!";
+
+
+    // Authorization
+    public static string AuthorizationDenied = "Yetkiniz yok!";
 
 
 }

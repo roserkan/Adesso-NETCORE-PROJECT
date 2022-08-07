@@ -6,13 +6,14 @@ namespace Adesso.Application.Features.Commands.Product.Update;
 
 public class UpdateProductCommand : IRequest<IDataResult<UpdateProductCommand>>
 {
-    public UpdateProductCommand(int id, string name, string imagePath, double price, int categoryId)
+    public UpdateProductCommand(int id, string name, string imagePath, double price, int categoryId, int stock)
     {
         Id = id;
         Name = name;
         ImagePath = imagePath;
         Price = price;
         CategoryId = categoryId;
+        Stock = stock;
     }
 
     public int Id { get; set; }
@@ -20,4 +21,5 @@ public class UpdateProductCommand : IRequest<IDataResult<UpdateProductCommand>>
     public string ImagePath { get; set; }
     public double Price { get; set; }
     public int CategoryId { get; set; }
+    public int Stock { get; set; }
 }
