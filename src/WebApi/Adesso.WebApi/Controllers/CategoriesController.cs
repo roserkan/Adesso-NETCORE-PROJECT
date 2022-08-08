@@ -1,8 +1,8 @@
 ﻿using Adesso.Application.Dtos.Category;
-using Adesso.Application.Features.Commands.Category.Create;
-using Adesso.Application.Features.Commands.Category.Delete;
-using Adesso.Application.Features.Commands.Category.Update;
-using Adesso.Application.Features.Queries.Category;
+using Adesso.Application.Features.Category.Commands.Create;
+using Adesso.Application.Features.Category.Commands.Delete;
+using Adesso.Application.Features.Category.Commands.Update;
+using Adesso.Application.Features.Category.Queries;
 using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

@@ -1,11 +1,11 @@
-﻿using Adesso.Application.Features.Commands.MoneyPoint.Delete;
-using Adesso.Application.Features.Commands.MoneyPoint.Update;
-using Adesso.Application.Features.Commands.MoneyPoint.Create;
-using Adesso.Application.Features.Queries.MoneyPoint;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Adesso.Application.Utilities.Results;
 using Adesso.Application.Dtos.MoneyPoint;
+using Adesso.Application.Features.MoneyPoint.Queries;
+using Adesso.Application.Features.MoneyPoint.Commands.Create;
+using Adesso.Application.Features.MoneyPoint.Commands.Update;
+using Adesso.Application.Features.MoneyPoint.Commands.Delete;
 
 namespace Adesso.WebApi.Controllers;
 

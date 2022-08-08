@@ -1,6 +1,6 @@
 ﻿using Adesso.Application.Dtos.Order;
-using Adesso.Application.Features.Commands.Order.Create;
-using Adesso.Application.Features.Queries.Order;
+using Adesso.Application.Features.Order.Commands.Create;
+using Adesso.Application.Features.Order.Queries;
 using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

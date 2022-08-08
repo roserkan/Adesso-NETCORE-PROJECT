@@ -1,8 +1,8 @@
 ﻿using Adesso.Application.Dtos.UserDetail;
-using Adesso.Application.Features.Commands.UserDetail.Create;
-using Adesso.Application.Features.Commands.UserDetail.Delete;
-using Adesso.Application.Features.Commands.UserDetail.Update;
-using Adesso.Application.Features.Queries.UserDetail;
+using Adesso.Application.Features.UserDetail.Commands.Create;
+using Adesso.Application.Features.UserDetail.Commands.Delete;
+using Adesso.Application.Features.UserDetail.Commands.Update;
+using Adesso.Application.Features.UserDetail.Queries;
 using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

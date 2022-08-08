@@ -1,8 +1,8 @@
 ﻿using Adesso.Application.Dtos.Role;
-using Adesso.Application.Features.Commands.Role.Create;
-using Adesso.Application.Features.Commands.Role.Delete;
-using Adesso.Application.Features.Commands.Role.Update;
-using Adesso.Application.Features.Queries.Role;
+using Adesso.Application.Features.Role.Commands.Create;
+using Adesso.Application.Features.Role.Commands.Delete;
+using Adesso.Application.Features.Role.Commands.Update;
+using Adesso.Application.Features.Role.Queries;
 using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

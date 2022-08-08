@@ -1,8 +1,8 @@
 ﻿using Adesso.Application.Dtos.Product;
-using Adesso.Application.Features.Commands.Product.Create;
-using Adesso.Application.Features.Commands.Product.Delete;
-using Adesso.Application.Features.Commands.Product.Update;
-using Adesso.Application.Features.Queries.Product;
+using Adesso.Application.Features.Product.Commands.Create;
+using Adesso.Application.Features.Product.Commands.Delete;
+using Adesso.Application.Features.Product.Commands.Update;
+using Adesso.Application.Features.Product.Queries;
 using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
