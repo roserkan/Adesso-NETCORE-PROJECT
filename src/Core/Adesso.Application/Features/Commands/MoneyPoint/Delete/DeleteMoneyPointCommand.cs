@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.MoneyPoint.Delete;
 
-public class DeleteMoneyPointCommand : IRequest<IDataResult<DeleteMoneyPointCommand>>
+public class DeleteMoneyPointCommand : IRequest<string>
 {
     public DeleteMoneyPointCommand(int id)
     {

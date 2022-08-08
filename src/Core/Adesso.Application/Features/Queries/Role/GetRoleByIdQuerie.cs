@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.Role;
 
-public class GetRoleByIdQuerie : IRequest<IDataResult<RoleDto>>
+public class GetRoleByIdQuerie : IRequest<RoleDto>
 {
     public int Id { get; set; }
 

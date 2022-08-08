@@ -1,7 +1,9 @@
-﻿using Adesso.Application.Features.Commands.Product.Create;
+﻿using Adesso.Application.Dtos.Product;
+using Adesso.Application.Features.Commands.Product.Create;
 using Adesso.Application.Features.Commands.Product.Delete;
 using Adesso.Application.Features.Commands.Product.Update;
 using Adesso.Application.Features.Queries.Product;
+using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +11,7 @@ namespace Adesso.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductsController : ControllerBase
+public class ProductsController : BaseController
 {
 
     private readonly IMediator _mediator;
@@ -23,22 +25,14 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> GetAllProducts()
     {
         var result = await _mediator.Send(new GetAllProductsQuerie());
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<List<ProductDto>>(result));
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetProductById(int id)
     {
         var result = await _mediator.Send(new GetProductByIdQuerie(id));
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<ProductDto>(result));
     }
 
 
@@ -47,12 +41,7 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
     {
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<CreateProductCommand>(command, result));
     }
 
     [HttpPut("{id:int}")]
@@ -60,25 +49,16 @@ public class ProductsController : ControllerBase
     {
         command.Id = id;
         var result = await _mediator.Send(command);
+        return Ok(new SuccessDataResult<UpdateProductCommand>(command, result));
 
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
     }
 
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteProduct(int id)
+    public async Task<IActionResult> Delete(int id)
     {
         var command = new DeleteProductCommand(id);
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<DeleteProductCommand>(command, result));
     }
 }

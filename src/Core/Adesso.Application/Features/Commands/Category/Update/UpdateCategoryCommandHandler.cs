@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Category.Update;
 
-public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, IDataResult<UpdateCategoryCommand>>
+public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryCommand, string>
 {
 
     private readonly IUnitOfWork _unitOfWork;
@@ -20,23 +20,18 @@ public class UpdateCategoryCommandHandler : IRequestHandler<UpdateCategoryComman
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<UpdateCategoryCommand>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
     {
         IResult result = BusinessRules.Run(
                 await CheckCategoryExsist(request.Id),
                 await CheckCategoryNameExist(request.Name)
             );
 
-        if (result != null)
-        {
-            return new ErrorDataResult<UpdateCategoryCommand>(result.Message);
-        }
-
         var category = _mapper.Map<Domain.Models.Category>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.Category>().UpdateAsync(category);
 
-        return new SuccessDataResult<UpdateCategoryCommand>(request, Messages.CategoryUpdated);
+        return Messages.CategoryUpdated;
 
     }
 

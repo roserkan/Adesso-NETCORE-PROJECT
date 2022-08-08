@@ -12,7 +12,7 @@ using Adesso.Application.Constants;
 
 namespace Adesso.Application.Features.Commands.User.Login;
 
-public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, IDataResult<LoginUserDto>>
+public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, LoginUserDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, IDataRe
         _configuration = configuration;
     }
 
-    public async Task<IDataResult<LoginUserDto>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
+    public async Task<LoginUserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var dbUser = await _unitOfWork.GetRepository<Domain.Models.User>().GetSingleAsync(i => i.EmailAddress == request.EmailAddress);
         if (dbUser == null)
@@ -54,7 +54,7 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, IDataRe
 
         result.Token = GenerateTokenHelper.GenerateToken(claims, _configuration);
 
-        return new SuccessDataResult<LoginUserDto>(result);
+        return result;
 
 
     }

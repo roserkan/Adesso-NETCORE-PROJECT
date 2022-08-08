@@ -1,14 +1,9 @@
-﻿using Adesso.Application.Utilities.Results;
-using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MediatR;
+
 
 namespace Adesso.Application.Features.Commands.Category.Delete;
 
-public class DeleteCategoryCommand: IRequest<IDataResult<DeleteCategoryCommand>>
+public class DeleteCategoryCommand: IRequest<string>
 {
     public DeleteCategoryCommand(int id)
     {

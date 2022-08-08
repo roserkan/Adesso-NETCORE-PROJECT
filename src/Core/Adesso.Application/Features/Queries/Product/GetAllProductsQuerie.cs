@@ -4,6 +4,6 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.Product;
 
-public class GetAllProductsQuerie : IRequest<IDataResult<List<ProductDto>>>
+public class GetAllProductsQuerie : IRequest<List<ProductDto>>
 {
 }

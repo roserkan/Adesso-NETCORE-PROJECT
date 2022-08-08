@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Product.Update;
 
-public class UpdateProductCommand : IRequest<IDataResult<UpdateProductCommand>>
+public class UpdateProductCommand : IRequest<string>
 {
     public UpdateProductCommand(int id, string name, string imagePath, double price, int categoryId, int stock)
     {

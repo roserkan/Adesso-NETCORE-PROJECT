@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Category.Create;
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, IDataResult<CreateCategoryCommand>>
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -19,19 +19,15 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<CreateCategoryCommand>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
         IResult result = BusinessRules.Run(await CheckCategoryNameExist(request.Name));
-        if (result != null)
-        {
-            return new ErrorDataResult<CreateCategoryCommand>(result.Message);
-        }
 
         var category = _mapper.Map<Domain.Models.Category>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.Category>().AddAsync(category);
 
-        return new SuccessDataResult<CreateCategoryCommand>(request, Messages.CategoryCreated);
+        return Messages.CategoryCreated;
     }
 
     private async Task<IResult> CheckCategoryNameExist(string name)

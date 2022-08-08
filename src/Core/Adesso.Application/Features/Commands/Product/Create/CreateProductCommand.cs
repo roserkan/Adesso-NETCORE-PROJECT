@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Adesso.Application.Features.Commands.Product.Create;
 
-public class CreateProductCommand: IRequest<IDataResult<CreateProductCommand>>
+public class CreateProductCommand: IRequest<string>
 {
     public CreateProductCommand(string name, string imagePath, double price, int categoryId, int stock)
     {

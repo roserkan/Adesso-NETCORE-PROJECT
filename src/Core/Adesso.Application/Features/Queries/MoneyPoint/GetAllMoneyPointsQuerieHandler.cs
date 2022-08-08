@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.MoneyPoint;
 
-public class GetAllMoneyPointsQuerieHandler : IRequestHandler<GetAllMoneyPointsQuerie, IDataResult<List<MoneyPointDto>>>
+public class GetAllMoneyPointsQuerieHandler : IRequestHandler<GetAllMoneyPointsQuerie, List<MoneyPointDto>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -17,12 +17,12 @@ public class GetAllMoneyPointsQuerieHandler : IRequestHandler<GetAllMoneyPointsQ
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<List<MoneyPointDto>>> Handle(GetAllMoneyPointsQuerie request, CancellationToken cancellationToken)
+    public async Task<List<MoneyPointDto>> Handle(GetAllMoneyPointsQuerie request, CancellationToken cancellationToken)
     {
         var categories = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().GetAll();
 
         var result = _mapper.Map<List<MoneyPointDto>>(categories);
 
-        return new SuccessDataResult<List<MoneyPointDto>>(result);
+        return result;
     }
 }

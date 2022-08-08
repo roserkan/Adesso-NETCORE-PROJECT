@@ -2,12 +2,13 @@
 using Adesso.Application.Dtos.Role;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
+using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
 namespace Adesso.Application.Features.Queries.Role;
 
-public class GetRoleByIdQuerieHandler : IRequestHandler<GetRoleByIdQuerie, IDataResult<RoleDto>>
+public class GetRoleByIdQuerieHandler : IRequestHandler<GetRoleByIdQuerie, RoleDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -18,15 +19,15 @@ public class GetRoleByIdQuerieHandler : IRequestHandler<GetRoleByIdQuerie, IData
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<RoleDto>> Handle(GetRoleByIdQuerie request, CancellationToken cancellationToken)
+    public async Task<RoleDto> Handle(GetRoleByIdQuerie request, CancellationToken cancellationToken)
     {
         var category = await _unitOfWork.GetRepository<Domain.Models.Role>().GetByIdAsync(request.Id);
 
         var result = _mapper.Map<RoleDto>(category);
 
         if (result is null)
-            return new ErrorDataResult<RoleDto>(Messages.RoleNotFound);
+            throw new DatabaseValidationException(Messages.RoleNotFound);
 
-        return new SuccessDataResult<RoleDto>(result);
+        return result;
     }
 }

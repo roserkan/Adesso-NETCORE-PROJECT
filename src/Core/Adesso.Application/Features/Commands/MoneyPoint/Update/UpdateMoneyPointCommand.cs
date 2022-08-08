@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.MoneyPoint.Update;
 
-public class UpdateMoneyPointCommand: IRequest<IDataResult<UpdateMoneyPointCommand>>
+public class UpdateMoneyPointCommand: IRequest<string>
 {
     public UpdateMoneyPointCommand(int id, int point, int categoryId)
     {

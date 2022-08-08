@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Adesso.Application.Features.Commands.User.Create;
 
-public class CreateUserCommand: IRequest<IDataResult<CreateUserCommand>>
+public class CreateUserCommand: IRequest<string>
 {
     public CreateUserCommand(string emailAddress, string password)
     {

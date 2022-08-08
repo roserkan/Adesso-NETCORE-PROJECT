@@ -4,6 +4,6 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.OrderItem;
 
-public class GetAllOrderItemsQuerie : IRequest<IDataResult<List<OrderItemDto>>>
+public class GetAllOrderItemsQuerie : IRequest<List<OrderItemDto>>
 {
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Adesso.Application.Features.Commands.User.Update;
 
-public class UpdateUserCommand : IRequest<IDataResult<UpdateUserCommand>>
+public class UpdateUserCommand : IRequest<string>
 {
     public UpdateUserCommand(int id, string emailAddress, string password)
     {

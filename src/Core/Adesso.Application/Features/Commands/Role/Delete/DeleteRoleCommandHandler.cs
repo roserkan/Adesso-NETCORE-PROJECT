@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Role.Delete;
 
-public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, IDataResult<DeleteRoleCommand>>
+public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,22 +19,18 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, IData
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<DeleteRoleCommand>> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
     {
 
         IResult result = BusinessRules.Run(
             await CheckRoleExsist(request.Id)
             );
-        if (result != null)
-        {
-            return new ErrorDataResult<DeleteRoleCommand>(result.Message);
-        }
 
         var product = _mapper.Map<Domain.Models.Role>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.Role>().DeleteAsync(product);
 
-        return new SuccessDataResult<DeleteRoleCommand>(request, Messages.RoleDeleted);
+        return Messages.RoleDeleted;
     }
 
     private async Task<IResult> CheckRoleExsist(int id)

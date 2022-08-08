@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.Product;
 
-public class GetAllProductsQuerieHandler : IRequestHandler<GetAllProductsQuerie, IDataResult<List<ProductDto>>>
+public class GetAllProductsQuerieHandler : IRequestHandler<GetAllProductsQuerie, List<ProductDto>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -17,12 +17,12 @@ public class GetAllProductsQuerieHandler : IRequestHandler<GetAllProductsQuerie,
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<List<ProductDto>>> Handle(GetAllProductsQuerie request, CancellationToken cancellationToken)
+    public async Task<List<ProductDto>> Handle(GetAllProductsQuerie request, CancellationToken cancellationToken)
     {
         var categories = await _unitOfWork.GetRepository<Domain.Models.Product>().GetAll();
 
         var result = _mapper.Map<List<ProductDto>>(categories);
 
-        return new SuccessDataResult<List<ProductDto>>(result);
+        return result;
     }
 }

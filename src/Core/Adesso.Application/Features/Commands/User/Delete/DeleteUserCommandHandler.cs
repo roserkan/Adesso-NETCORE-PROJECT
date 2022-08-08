@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.User.Delete;
 
-public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, IDataResult<DeleteUserCommand>>
+public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,19 +19,15 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, IData
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<DeleteUserCommand>> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
         IResult result = BusinessRules.Run(await CheckUserExist(request.Id));
-        if (result != null)
-        {
-            return new ErrorDataResult<DeleteUserCommand>(result.Message);
-        }
 
         var category = _mapper.Map<Domain.Models.User>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.User>().DeleteAsync(category);
 
-        return new SuccessDataResult<DeleteUserCommand>(request, Messages.UserDeleted);
+        return Messages.UserDeleted;
     }
 
     private async Task<IResult> CheckUserExist(int id)

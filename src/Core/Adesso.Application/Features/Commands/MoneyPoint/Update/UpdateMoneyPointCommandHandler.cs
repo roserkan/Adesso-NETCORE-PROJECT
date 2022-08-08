@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.MoneyPoint.Update;
 
-public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCommand, IDataResult<UpdateMoneyPointCommand>>
+public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,23 +19,19 @@ public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<UpdateMoneyPointCommand>> Handle(UpdateMoneyPointCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(UpdateMoneyPointCommand request, CancellationToken cancellationToken)
     {
 
         IResult result = BusinessRules.Run(
                 await CheckMoneyPointExist(request.Id),
                 await CheckCategoryExist(request.CategoryId)
             );
-        if (result != null)
-        {
-            return new ErrorDataResult<UpdateMoneyPointCommand>(result.Message);
-        }
 
         var product = _mapper.Map<Domain.Models.MoneyPoint>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().UpdateAsync(product);
 
-        return new SuccessDataResult<UpdateMoneyPointCommand>(request, Messages.MoneyPointUpdated);
+        return Messages.MoneyPointUpdated;
     }
 
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Adesso.Application.Features.Commands.Category.Update;
 
-public class UpdateCategoryCommand: IRequest<IDataResult<UpdateCategoryCommand>>
+public class UpdateCategoryCommand: IRequest<string>
 {
     public UpdateCategoryCommand(int id, string name)
     {

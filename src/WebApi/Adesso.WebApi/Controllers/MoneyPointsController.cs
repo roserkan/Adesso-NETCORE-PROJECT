@@ -1,12 +1,11 @@
-﻿using Adesso.Application.Features.Commands.Category.Delete;
-using Adesso.Application.Features.Commands.Category.Update;
-using Adesso.Application.Features.Commands.MoneyPoint.Create;
-using Adesso.Application.Features.Commands.MoneyPoint.Delete;
+﻿using Adesso.Application.Features.Commands.MoneyPoint.Delete;
 using Adesso.Application.Features.Commands.MoneyPoint.Update;
+using Adesso.Application.Features.Commands.MoneyPoint.Create;
 using Adesso.Application.Features.Queries.MoneyPoint;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Adesso.Application.Utilities.Results;
+using Adesso.Application.Dtos.MoneyPoint;
 
 namespace Adesso.WebApi.Controllers;
 
@@ -26,22 +25,14 @@ public class MoneyPointsController : BaseController
     public async Task<IActionResult> GetAllMoneyPoints()
     {
         var result = await _mediator.Send(new GetAllMoneyPointsQuerie());
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<List<MoneyPointDto>>(result));
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetMoneyPointById(int id)
     {
         var result = await _mediator.Send(new GetMoneyPointByIdQuerie(id));
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<MoneyPointDto>(result));
     }
 
 
@@ -50,12 +41,7 @@ public class MoneyPointsController : BaseController
     public async Task<IActionResult> CreateMoneyPoint([FromBody] CreateMoneyPointCommand command)
     {
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<CreateMoneyPointCommand>(command, result));
     }
 
     [HttpPut("{id:int}")]
@@ -63,12 +49,8 @@ public class MoneyPointsController : BaseController
     {
         command.Id = id;
         var result = await _mediator.Send(command);
+        return Ok(new SuccessDataResult<UpdateMoneyPointCommand>(command, result));
 
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
     }
 
 
@@ -77,11 +59,6 @@ public class MoneyPointsController : BaseController
     {
         var command = new DeleteMoneyPointCommand(id);
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<DeleteMoneyPointCommand>(command, result));
     }
 }

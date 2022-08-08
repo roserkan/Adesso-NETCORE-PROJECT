@@ -2,12 +2,13 @@
 using Adesso.Application.Dtos.OrderItem;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
+using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
 namespace Adesso.Application.Features.Queries.OrderItem;
 
-public class GetOrderItemByIdQuerieHandler : IRequestHandler<GetOrderItemByIdQuerie, IDataResult<OrderItemDto>>
+public class GetOrderItemByIdQuerieHandler : IRequestHandler<GetOrderItemByIdQuerie, OrderItemDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -18,15 +19,15 @@ public class GetOrderItemByIdQuerieHandler : IRequestHandler<GetOrderItemByIdQue
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<OrderItemDto>> Handle(GetOrderItemByIdQuerie request, CancellationToken cancellationToken)
+    public async Task<OrderItemDto> Handle(GetOrderItemByIdQuerie request, CancellationToken cancellationToken)
     {
         var category = await _unitOfWork.GetRepository<Domain.Models.OrderItem>().GetByIdAsync(request.Id);
 
         var result = _mapper.Map<OrderItemDto>(category);
 
         if (result is null)
-            return new ErrorDataResult<OrderItemDto>(Messages.OrderItemNotFound);
+            throw new DatabaseValidationException(Messages.OrderItemNotFound);
 
-        return new SuccessDataResult<OrderItemDto>(result);
+        return result;
     }
 }

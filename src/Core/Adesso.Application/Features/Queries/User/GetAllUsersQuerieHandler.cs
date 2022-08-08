@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.User;
 
-public class GetAllUsersQuerieHandler : IRequestHandler<GetAllUsersQuerie, IDataResult<List<UserDto>>>
+public class GetAllUsersQuerieHandler : IRequestHandler<GetAllUsersQuerie, List<UserDto>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -17,12 +17,12 @@ public class GetAllUsersQuerieHandler : IRequestHandler<GetAllUsersQuerie, IData
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<List<UserDto>>> Handle(GetAllUsersQuerie request, CancellationToken cancellationToken)
+    public async Task<List<UserDto>> Handle(GetAllUsersQuerie request, CancellationToken cancellationToken)
     {
         var categories = await _unitOfWork.GetRepository<Domain.Models.User>().GetAll();
 
         var result = _mapper.Map<List<UserDto>>(categories);
 
-        return new SuccessDataResult<List<UserDto>>(result);
+        return result;
     }
 }

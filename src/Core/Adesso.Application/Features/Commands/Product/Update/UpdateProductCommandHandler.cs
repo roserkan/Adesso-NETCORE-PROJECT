@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Product.Update;
 
-public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, IDataResult<UpdateProductCommand>>
+public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,7 +19,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<UpdateProductCommand>> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
     {
 
         IResult result = BusinessRules.Run(
@@ -27,16 +27,12 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
                 await CheckProductNameExist(request.Name),
                 await CheckCategoryExist(request.CategoryId)
             );
-        if (result != null)
-        {
-            return new ErrorDataResult<UpdateProductCommand>(result.Message);
-        }
 
         var product = _mapper.Map<Domain.Models.Product>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.Product>().UpdateAsync(product);
 
-        return new SuccessDataResult<UpdateProductCommand>(request, Messages.ProductUpdated);
+        return Messages.ProductUpdated;
     }
 
 

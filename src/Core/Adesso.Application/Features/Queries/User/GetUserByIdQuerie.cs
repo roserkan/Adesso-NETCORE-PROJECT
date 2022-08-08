@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.User;
 
-public class GetUserByIdQuerie : IRequest<IDataResult<UserDto>>
+public class GetUserByIdQuerie : IRequest<UserDto>
 {
     public int Id { get; set; }
 

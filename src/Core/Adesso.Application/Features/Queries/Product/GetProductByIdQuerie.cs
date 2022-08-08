@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.Product;
 
-public class GetProductByIdQuerie : IRequest<IDataResult<ProductDto>>
+public class GetProductByIdQuerie : IRequest<ProductDto>
 {
     public int Id { get; set; }
 

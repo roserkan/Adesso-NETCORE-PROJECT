@@ -4,6 +4,6 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.Role;
 
-public class GetAllRolesQuerie : IRequest<IDataResult<List<RoleDto>>>
+public class GetAllRolesQuerie : IRequest<List<RoleDto>>
 {
 }

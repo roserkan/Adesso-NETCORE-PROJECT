@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.MoneyPoint.Create;
 
-public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCommand, IDataResult<CreateMoneyPointCommand>>
+public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,22 +19,18 @@ public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<CreateMoneyPointCommand>> Handle(CreateMoneyPointCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateMoneyPointCommand request, CancellationToken cancellationToken)
     {
         IResult result = BusinessRules.Run(
                 await CheckCategoryExist(request.CategoryId)
 
             );
-        if (result != null)
-        {
-            return new ErrorDataResult<CreateMoneyPointCommand>(result.Message);
-        }
 
         var moneyPoint = _mapper.Map<Domain.Models.MoneyPoint>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().AddAsync(moneyPoint);
 
-        return new SuccessDataResult<CreateMoneyPointCommand>(request, Messages.MoneyPointCreated);
+        return Messages.MoneyPointCreated;
     }
 
 

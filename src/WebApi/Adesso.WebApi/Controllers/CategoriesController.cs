@@ -1,7 +1,9 @@
-﻿using Adesso.Application.Features.Commands.Category.Create;
+﻿using Adesso.Application.Dtos.Category;
+using Adesso.Application.Features.Commands.Category.Create;
 using Adesso.Application.Features.Commands.Category.Delete;
 using Adesso.Application.Features.Commands.Category.Update;
 using Adesso.Application.Features.Queries.Category;
+using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,22 +25,14 @@ public class CategoriesController : BaseController
     public async Task<IActionResult> GetAllCateories()
     {
         var result = await _mediator.Send(new GetAllCategoriesQuerie());
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<List<CategoryDto>>(result));
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetCategoryById(int id)
     {
         var result = await _mediator.Send(new GetCategoryByIdQuerie(id));
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<CategoryDto>(result));
     }
 
 
@@ -47,12 +41,7 @@ public class CategoriesController : BaseController
     public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
     {
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<CreateCategoryCommand>(command, result));
     }
 
     [HttpPut("{id:int}")]
@@ -60,12 +49,8 @@ public class CategoriesController : BaseController
     {
         command.Id = id;
         var result = await _mediator.Send(command);
+        return Ok(new SuccessDataResult<UpdateCategoryCommand>(command, result));
 
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
     }
 
 
@@ -74,11 +59,6 @@ public class CategoriesController : BaseController
     {
         var command = new DeleteCategoryCommand(id);
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<DeleteCategoryCommand>(command, result));
     }
 }

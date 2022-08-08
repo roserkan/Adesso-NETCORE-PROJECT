@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Order.Create;
 
-public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, IDataResult<CreateOrderCommand>>
+public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -20,7 +20,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, IDa
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<CreateOrderCommand>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
         IResult result = BusinessRules.Run(
                 await CheckUserExist(request.UserId),
@@ -28,10 +28,6 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, IDa
                 await CheckQuantityProficiencyForProduct(request.CreateOrderItemDtos)
 
             );
-        if (result != null)
-        {
-            return new ErrorDataResult<CreateOrderCommand>(result.Message);
-        }
 
         var order = GetOrder(request.UserId);
 
@@ -46,7 +42,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, IDa
         await UpdateProductStock(request.CreateOrderItemDtos);
 
 
-        return new SuccessDataResult<CreateOrderCommand>(null, Messages.OrderSuccess);
+        return Messages.OrderSuccess;
     }
 
     private Domain.Models.Order GetOrder(int userId)

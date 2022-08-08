@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.MoneyPoint.Create;
 
-public class CreateMoneyPointCommand: IRequest<IDataResult<CreateMoneyPointCommand>>
+public class CreateMoneyPointCommand: IRequest<string>
 {
     public CreateMoneyPointCommand(int point, int categoryId)
     {

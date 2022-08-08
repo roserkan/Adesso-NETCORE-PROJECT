@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Category.Create;
 
-public class CreateCategoryCommand : IRequest<IDataResult<CreateCategoryCommand>>
+public class CreateCategoryCommand : IRequest<string>
 {
     public string Name { get; set; }
 

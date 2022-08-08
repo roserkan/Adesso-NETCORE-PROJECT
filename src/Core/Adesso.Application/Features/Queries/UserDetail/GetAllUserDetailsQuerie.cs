@@ -4,6 +4,6 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.UserDetail;
 
-public class GetAllUserDetailsQuerie : IRequest<IDataResult<List<UserDetailDto>>>
+public class GetAllUserDetailsQuerie : IRequest<List<UserDetailDto>>
 {
 }

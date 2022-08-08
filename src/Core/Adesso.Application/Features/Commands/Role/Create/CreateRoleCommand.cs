@@ -3,7 +3,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Role.Create;
 
-public class CreateRoleCommand: IRequest<IDataResult<CreateRoleCommand>>
+public class CreateRoleCommand: IRequest<string>
 {
  
     public string RoleName { get; set; }

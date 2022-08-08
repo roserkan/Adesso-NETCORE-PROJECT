@@ -78,7 +78,24 @@ public static class Messages
 
 
     // UserDetail
+    public static string UserDetailCreated = "Kullanıcı başarıyla eklenmiştir.";
+    public static string UserDetailUpdated = "Kullanıcı başarıyla güncellenmişti.";
+    public static string UserDetailDeleted = "Kullanıcı başarıyla silinmiştir.";
+    
     public static string UserDetailNotFound = "Kullanıcı bulunamadı!";
+    public static string UserDetailAlreadyExist = "Kullanıcı detayı zaten var!";
+
+    public static string UserUserIdNotNull = "Böyle bir kullanıcı yok!";
+    public static string UserFirstNameNotNull = "İsim alanı boş olamaz!";
+    public static string UserFirstNameMinLen = "İsim en az 2 karakter uzunluğunda olmalı!";
+    public static string UserFirstNameMaxLen = "İsim en fazla 24 karakter uzunluğunda olmalı!";
+    public static string UserLastNameNotNull = "Soyad alanı boş olamaz!";
+    public static string UserLastNameMinLen = "Soyad en az 2 karakter uzunluğunda olmalı!";
+    public static string UserLastNameMaxLen = "Soyad en fazla 24 karakter uzunluğunda olmalı!";
+    public static string UserAddressNotNull = "Adres alanı boş olamaz!";
+    public static string UserAddressMinLen = "Adres en az 2 karakter uzunluğunda olmalı!";
+    public static string UserAddressMaxLen = "Adress en fazla 500 karakter uzunluğunda olmalı!";
+
 
 
     // Authorization

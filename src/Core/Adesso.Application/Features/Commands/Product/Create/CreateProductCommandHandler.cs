@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Product.Create;
 
-public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, IDataResult<CreateProductCommand>>
+public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,22 +19,19 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<CreateProductCommand>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         IResult result = BusinessRules.Run(
                 await CheckCategoryExist(request.CategoryId),
                 await CheckProductNameExist(request.Name)
             );
-        if (result != null)
-        {
-            return new ErrorDataResult<CreateProductCommand>(result.Message);
-        }
+        
 
         var category = _mapper.Map<Domain.Models.Product>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.Product>().AddAsync(category);
 
-        return new SuccessDataResult<CreateProductCommand>(request, Messages.ProductCreated);
+        return Messages.ProductCreated;
     }
 
 

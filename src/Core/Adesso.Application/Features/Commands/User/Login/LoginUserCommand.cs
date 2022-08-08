@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.User.Login;
 
-public class LoginUserCommand: IRequest<IDataResult<LoginUserDto>>
+public class LoginUserCommand: IRequest<LoginUserDto>
 {
     public LoginUserCommand(string emailAddress, string password)
     {

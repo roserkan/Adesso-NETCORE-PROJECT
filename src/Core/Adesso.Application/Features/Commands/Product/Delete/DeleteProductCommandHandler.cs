@@ -6,7 +6,7 @@ using AutoMapper;
 using MediatR;
 namespace Adesso.Application.Features.Commands.Product.Delete;
 
-public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, IDataResult<DeleteProductCommand>>
+public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -17,20 +17,17 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<DeleteProductCommand>> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
 
         IResult result = BusinessRules.Run(await CheckProductExsist(request.Id));
-        if (result != null)
-        {
-            return new ErrorDataResult<DeleteProductCommand>(result.Message);
-        }
+   
 
         var product = _mapper.Map<Domain.Models.Product>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.Product>().DeleteAsync(product);
 
-        return new SuccessDataResult<DeleteProductCommand>(request, Messages.ProductDeleted);
+        return Messages.ProductDeleted;
     }
 
     private async Task<IResult> CheckProductExsist(int id)

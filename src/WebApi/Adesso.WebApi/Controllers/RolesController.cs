@@ -1,7 +1,9 @@
-﻿using Adesso.Application.Features.Commands.Role.Create;
+﻿using Adesso.Application.Dtos.Role;
+using Adesso.Application.Features.Commands.Role.Create;
 using Adesso.Application.Features.Commands.Role.Delete;
 using Adesso.Application.Features.Commands.Role.Update;
 using Adesso.Application.Features.Queries.Role;
+using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,52 +22,35 @@ public class RolesController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAllRoless()
+    public async Task<IActionResult> GetAllRoles()
     {
         var result = await _mediator.Send(new GetAllRolesQuerie());
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<List<RoleDto>>(result));
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetRolesById(int id)
+    public async Task<IActionResult> GetRoleById(int id)
     {
         var result = await _mediator.Send(new GetRoleByIdQuerie(id));
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<RoleDto>(result));
     }
 
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateRoles([FromBody] CreateRoleCommand command)
+    public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommand command)
     {
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<CreateRoleCommand>(command, result));
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateRoles(int id, [FromBody] UpdateRoleCommand command)
+    public async Task<IActionResult> UpdateRole(int id, [FromBody] UpdateRoleCommand command)
     {
         command.Id = id;
         var result = await _mediator.Send(command);
+        return Ok(new SuccessDataResult<UpdateRoleCommand>(command, result));
 
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
     }
 
 
@@ -74,11 +59,6 @@ public class RolesController : BaseController
     {
         var command = new DeleteRoleCommand(id);
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<DeleteRoleCommand>(command, result));
     }
 }

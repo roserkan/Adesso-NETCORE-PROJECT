@@ -4,6 +4,6 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.Category;
 
-public class GetAllCategoriesQuerie : IRequest<IDataResult<List<CategoryDto>>>
+public class GetAllCategoriesQuerie : IRequest<List<CategoryDto>>
 {
 }

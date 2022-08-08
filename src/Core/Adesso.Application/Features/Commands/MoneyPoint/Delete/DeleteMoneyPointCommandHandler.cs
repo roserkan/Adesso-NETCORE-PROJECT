@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.MoneyPoint.Delete;
 
-public class DeleteMoneyPointCommandHandler : IRequestHandler<DeleteMoneyPointCommand, IDataResult<DeleteMoneyPointCommand>>
+public class DeleteMoneyPointCommandHandler : IRequestHandler<DeleteMoneyPointCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,22 +19,17 @@ public class DeleteMoneyPointCommandHandler : IRequestHandler<DeleteMoneyPointCo
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<DeleteMoneyPointCommand>> Handle(DeleteMoneyPointCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(DeleteMoneyPointCommand request, CancellationToken cancellationToken)
     {
 
         IResult result = BusinessRules.Run(
             await CheckMoneyPointExsist(request.Id)
             );
-        if (result != null)
-        {
-            return new ErrorDataResult<DeleteMoneyPointCommand>(result.Message);
-        }
-
         var product = _mapper.Map<Domain.Models.MoneyPoint>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().DeleteAsync(product);
 
-        return new SuccessDataResult<DeleteMoneyPointCommand>(request, Messages.MoneyPointDeleted);
+        return Messages.MoneyPointDeleted;
     }
 
     private async Task<IResult> CheckMoneyPointExsist(int id)

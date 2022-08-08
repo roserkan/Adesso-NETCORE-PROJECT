@@ -1,6 +1,7 @@
-﻿using Adesso.Application.Features.Commands.Order.Create;
+﻿using Adesso.Application.Dtos.Order;
+using Adesso.Application.Features.Commands.Order.Create;
 using Adesso.Application.Features.Queries.Order;
-using Adesso.Application.Utilities.Filters;
+using Adesso.Application.Utilities.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,7 @@ namespace Adesso.WebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class OrdersController : ControllerBase
+public class OrdersController : BaseController
 {
 
     private readonly IMediator _mediator;
@@ -19,26 +20,17 @@ public class OrdersController : ControllerBase
     }
 
     [HttpGet]
-    //[SecuredOperation("Admin")]
     public async Task<IActionResult> GetAllOrders()
     {
         var result = await _mediator.Send(new GetAllOrdersQuerie());
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<List<OrderDto>>(result));
     }
 
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetOrderById(int id)
     {
         var result = await _mediator.Send(new GetOrderByIdQuerie(id));
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<OrderDto>(result));
     }
 
 
@@ -47,12 +39,7 @@ public class OrdersController : ControllerBase
     public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
     {
         var result = await _mediator.Send(command);
-
-        if (result.Success)
-        {
-            return Ok(result);
-        }
-        return BadRequest(result);
+        return Ok(new SuccessDataResult<CreateOrderCommand>(command, result));
     }
 
     //[HttpPut("{id:int}")]
@@ -60,25 +47,16 @@ public class OrdersController : ControllerBase
     //{
     //    command.Id = id;
     //    var result = await _mediator.Send(command);
+    //    return Ok(new SuccessDataResult<UpdateOrderCommand>(command, result));
 
-    //    if (result.Success)
-    //    {
-    //        return Ok(result);
-    //    }
-    //    return BadRequest(result);
     //}
 
 
     //[HttpDelete("{id:int}")]
-    //public async Task<IActionResult> DeleteOrder(int id)
+    //public async Task<IActionResult> Delete(int id)
     //{
     //    var command = new DeleteOrderCommand(id);
     //    var result = await _mediator.Send(command);
-
-    //    if (result.Success)
-    //    {
-    //        return Ok(result);
-    //    }
-    //    return BadRequest(result);
+    //    return Ok(new SuccessDataResult<DeleteOrderCommand>(command, result));
     //}
 }

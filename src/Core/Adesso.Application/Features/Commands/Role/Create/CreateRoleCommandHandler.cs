@@ -8,7 +8,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Role.Create;
 
-public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, IDataResult<CreateRoleCommand>>
+public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -19,22 +19,19 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, IData
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<CreateRoleCommand>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
         IResult result = BusinessRules.Run(
                 await CheckRoleNameExist(request.RoleName)
 
             );
-        if (result != null)
-        {
-            return new ErrorDataResult<CreateRoleCommand>(result.Message);
-        }
+      
 
         var moneyPoint = _mapper.Map<Domain.Models.Role>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.Role>().AddAsync(moneyPoint);
 
-        return new SuccessDataResult<CreateRoleCommand>(request, Messages.RoleCreated);
+        return Messages.RoleCreated;
     }
 
 

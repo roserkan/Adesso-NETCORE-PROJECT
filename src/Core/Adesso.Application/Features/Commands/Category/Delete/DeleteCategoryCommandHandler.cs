@@ -7,7 +7,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Category.Delete;
 
-public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, IDataResult<DeleteCategoryCommand>>
+public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -18,19 +18,16 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<DeleteCategoryCommand>> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
         IResult result = BusinessRules.Run(await CheckCategoryExsist(request.Id));
-        if (result != null)
-        {
-            return new ErrorDataResult<DeleteCategoryCommand>(result.Message);
-        }
+       
 
         var category = _mapper.Map<Domain.Models.Category>(request);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.Category>().DeleteAsync(category);
 
-        return new SuccessDataResult<DeleteCategoryCommand>(request, Messages.CategoryDeleted);
+        return Messages.CategoryDeleted;
     }
 
     private async Task<IResult> CheckCategoryExsist(int id)

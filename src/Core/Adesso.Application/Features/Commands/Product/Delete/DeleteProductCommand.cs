@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Product.Delete;
 
-public class DeleteProductCommand : IRequest<IDataResult<DeleteProductCommand>>
+public class DeleteProductCommand : IRequest<string>
 {
     public DeleteProductCommand(int id)
     {

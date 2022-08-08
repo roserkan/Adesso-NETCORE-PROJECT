@@ -10,7 +10,8 @@ public class BusinessRules
         {
             if (!logic.Success)
             {
-                return logic;
+                throw new Exception(logic.Message);
+                //return logic;
             }
         }
 

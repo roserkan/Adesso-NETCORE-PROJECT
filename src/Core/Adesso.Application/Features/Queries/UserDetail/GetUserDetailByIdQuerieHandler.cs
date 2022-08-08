@@ -2,12 +2,13 @@
 using Adesso.Application.Dtos.UserDetail;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
+using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
 namespace Adesso.Application.Features.Queries.UserDetail;
 
-public class GetUserDetailByIdQuerieHandler : IRequestHandler<GetUserDetailByIdQuerie, IDataResult<UserDetailDto>>
+public class GetUserDetailByIdQuerieHandler : IRequestHandler<GetUserDetailByIdQuerie, UserDetailDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -18,15 +19,15 @@ public class GetUserDetailByIdQuerieHandler : IRequestHandler<GetUserDetailByIdQ
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<UserDetailDto>> Handle(GetUserDetailByIdQuerie request, CancellationToken cancellationToken)
+    public async Task<UserDetailDto> Handle(GetUserDetailByIdQuerie request, CancellationToken cancellationToken)
     {
         var category = await _unitOfWork.GetRepository<Domain.Models.UserDetail>().GetByIdAsync(request.Id);
 
         var result = _mapper.Map<UserDetailDto>(category);
 
         if (result is null)
-            return new ErrorDataResult<UserDetailDto>(Messages.UserDetailNotFound);
+            throw new DatabaseValidationException(Messages.UserDetailNotFound);
 
-        return new SuccessDataResult<UserDetailDto>(result);
+        return result;
     }
 }

@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.User.Update;
 
-public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, IDataResult<UpdateUserCommand>>
+public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, string>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -20,24 +20,20 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, IData
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<IDataResult<UpdateUserCommand>> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    public async Task<string> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
 
         IResult result = BusinessRules.Run(
                 await CheckUserExsist(request.Id),
                 await CheckEmailAddressExist(request.EmailAddress)
              );
-        if (result != null)
-        {
-            return new ErrorDataResult<UpdateUserCommand>(result.Message);
-        }
 
         var user = _mapper.Map<Domain.Models.User>(request);
         user.Password = PasswordEncryptor.Encrypt(user.Password);
 
         var rows = await _unitOfWork.GetRepository<Domain.Models.User>().UpdateAsync(user);
 
-        return new SuccessDataResult<UpdateUserCommand>(request, Messages.UserUpdated);
+        return Messages.UserUpdated;
     }
 
 

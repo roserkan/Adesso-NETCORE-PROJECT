@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.MoneyPoint;
 
-public class GetMoneyPointByIdQuerie : IRequest<IDataResult<MoneyPointDto>>
+public class GetMoneyPointByIdQuerie : IRequest<MoneyPointDto>
 {
     public int Id { get; set; }
 

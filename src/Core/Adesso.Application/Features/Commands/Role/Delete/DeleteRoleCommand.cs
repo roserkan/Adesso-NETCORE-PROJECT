@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Commands.Role.Delete;
 
-public class DeleteRoleCommand : IRequest<IDataResult<DeleteRoleCommand>>
+public class DeleteRoleCommand : IRequest<string>
 {
     public DeleteRoleCommand(int id)
     {

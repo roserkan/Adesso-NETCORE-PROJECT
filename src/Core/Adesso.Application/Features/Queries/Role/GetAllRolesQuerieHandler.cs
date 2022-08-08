@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Queries.Role;
 
-public class GetAllRolesQuerieHandler : IRequestHandler<GetAllRolesQuerie, IDataResult<List<RoleDto>>>
+public class GetAllRolesQuerieHandler : IRequestHandler<GetAllRolesQuerie, List<RoleDto>>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -17,12 +17,12 @@ public class GetAllRolesQuerieHandler : IRequestHandler<GetAllRolesQuerie, IData
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<List<RoleDto>>> Handle(GetAllRolesQuerie request, CancellationToken cancellationToken)
+    public async Task<List<RoleDto>> Handle(GetAllRolesQuerie request, CancellationToken cancellationToken)
     {
         var roles = await _unitOfWork.GetRepository<Domain.Models.Role>().GetAll();
 
         var result = _mapper.Map<List<RoleDto>>(roles);
 
-        return new SuccessDataResult<List<RoleDto>>(result);
+        return result;
     }
 }

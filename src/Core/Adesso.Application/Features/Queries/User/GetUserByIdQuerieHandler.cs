@@ -3,12 +3,13 @@ using Adesso.Application.Dtos.User;
 using Adesso.Application.Features.Queries.User;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
+using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
 namespace Adesso.Application.Features.Queries.User;
 
-public class GetUserByIdQuerieHandler : IRequestHandler<GetUserByIdQuerie, IDataResult<UserDto>>
+public class GetUserByIdQuerieHandler : IRequestHandler<GetUserByIdQuerie, UserDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -19,15 +20,15 @@ public class GetUserByIdQuerieHandler : IRequestHandler<GetUserByIdQuerie, IData
         _mapper = mapper;
     }
 
-    public async Task<IDataResult<UserDto>> Handle(GetUserByIdQuerie request, CancellationToken cancellationToken)
+    public async Task<UserDto> Handle(GetUserByIdQuerie request, CancellationToken cancellationToken)
     {
         var category = await _unitOfWork.GetRepository<Domain.Models.User>().GetByIdAsync(request.Id);
 
         var result = _mapper.Map<UserDto>(category);
 
         if (result is null)
-            return new ErrorDataResult<UserDto>(Messages.UserNotFound);
+            throw new DatabaseValidationException(Messages.UserNotFound);
 
-        return new SuccessDataResult<UserDto>(result);
+        return result;
     }
 }
