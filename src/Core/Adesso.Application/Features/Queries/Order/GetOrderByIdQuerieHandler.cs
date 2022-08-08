@@ -12,16 +12,19 @@ public class GetOrderByIdQuerieHandler : IRequestHandler<GetOrderByIdQuerie, Ord
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.Order> _orderRepository;
+
 
     public GetOrderByIdQuerieHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _orderRepository = _unitOfWork.GetRepository<Domain.Models.Order>();
     }
 
     public async Task<OrderDto> Handle(GetOrderByIdQuerie request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Order>().GetByIdAsync(request.Id);
+        var category = await _orderRepository.GetByIdAsync(request.Id);
 
         var result = _mapper.Map<OrderDto>(category);
 

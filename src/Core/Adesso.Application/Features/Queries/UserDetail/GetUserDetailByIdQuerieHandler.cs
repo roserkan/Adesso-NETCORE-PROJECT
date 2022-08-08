@@ -12,16 +12,18 @@ public class GetUserDetailByIdQuerieHandler : IRequestHandler<GetUserDetailByIdQ
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.UserDetail> _userDetailRepository;
 
     public GetUserDetailByIdQuerieHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _userDetailRepository = _unitOfWork.GetRepository<Domain.Models.UserDetail>();
     }
 
     public async Task<UserDetailDto> Handle(GetUserDetailByIdQuerie request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.UserDetail>().GetByIdAsync(request.Id);
+        var category = await _userDetailRepository.GetByIdAsync(request.Id);
 
         var result = _mapper.Map<UserDetailDto>(category);
 

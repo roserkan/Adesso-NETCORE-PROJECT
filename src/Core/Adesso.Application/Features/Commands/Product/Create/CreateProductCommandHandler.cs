@@ -12,11 +12,17 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.Product> _productRepository;
+    private IGenericRepository<Domain.Models.Category> _categoryRepository;
+
 
     public CreateProductCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _productRepository = _unitOfWork.GetRepository<Domain.Models.Product>();
+        _categoryRepository = _unitOfWork.GetRepository<Domain.Models.Category>();
+
     }
 
     public async Task<string> Handle(CreateProductCommand request, CancellationToken cancellationToken)
@@ -29,7 +35,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
         var category = _mapper.Map<Domain.Models.Product>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.Product>().AddAsync(category);
+        var rows = await _productRepository.AddAsync(category);
 
         return Messages.ProductCreated;
     }
@@ -37,7 +43,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
     private async Task<IResult> CheckProductNameExist(string name)
     {
-        var product = await _unitOfWork.GetRepository<Domain.Models.Product>()
+        var product = await _productRepository
             .GetSingleAsync(p => p.Name == name);
         if (product is not null)
         {
@@ -47,7 +53,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
     }
     private async Task<IResult> CheckCategoryExist(int categoryId)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Category>().GetByIdAsync(categoryId);
+        var category = await _categoryRepository.GetByIdAsync(categoryId);
         if (category is null)
         {
             return new ErrorResult(Messages.CategoryIdNotFound);

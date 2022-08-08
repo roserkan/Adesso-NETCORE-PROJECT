@@ -12,11 +12,15 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, strin
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.Role> _roleRepository;
+
 
     public CreateRoleCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _roleRepository = _unitOfWork.GetRepository<Domain.Models.Role>();
+
     }
 
     public async Task<string> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
@@ -29,7 +33,7 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, strin
 
         var moneyPoint = _mapper.Map<Domain.Models.Role>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.Role>().AddAsync(moneyPoint);
+        var rows = await _roleRepository.AddAsync(moneyPoint);
 
         return Messages.RoleCreated;
     }
@@ -37,7 +41,7 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, strin
 
     private async Task<IResult> CheckRoleNameExist(string roleName)
     {
-        var role = await _unitOfWork.GetRepository<Domain.Models.Role>()
+        var role = await _roleRepository
             .GetSingleAsync(r => r.RoleName == roleName);
 
         if (role is not null)

@@ -12,11 +12,15 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, strin
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.Role> _roleRepository;
+
 
     public DeleteRoleCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _roleRepository = _unitOfWork.GetRepository<Domain.Models.Role>();
+
     }
 
     public async Task<string> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
@@ -28,14 +32,14 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, strin
 
         var product = _mapper.Map<Domain.Models.Role>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.Role>().DeleteAsync(product);
+        var rows = await _roleRepository.DeleteAsync(product);
 
         return Messages.RoleDeleted;
     }
 
     private async Task<IResult> CheckRoleExsist(int id)
     {
-        var product = await _unitOfWork.GetRepository<Domain.Models.Role>().GetByIdAsync(id);
+        var product = await _roleRepository.GetByIdAsync(id);
         if (product is null)
         {
             return new ErrorResult(Messages.RoleNotFound);

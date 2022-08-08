@@ -12,11 +12,15 @@ public class DeleteMoneyPointCommandHandler : IRequestHandler<DeleteMoneyPointCo
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.MoneyPoint> _moneyPointRepository;
+
 
     public DeleteMoneyPointCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _moneyPointRepository = _unitOfWork.GetRepository<Domain.Models.MoneyPoint>();
+
     }
 
     public async Task<string> Handle(DeleteMoneyPointCommand request, CancellationToken cancellationToken)
@@ -27,14 +31,14 @@ public class DeleteMoneyPointCommandHandler : IRequestHandler<DeleteMoneyPointCo
             );
         var product = _mapper.Map<Domain.Models.MoneyPoint>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().DeleteAsync(product);
+        var rows = await _moneyPointRepository.DeleteAsync(product);
 
         return Messages.MoneyPointDeleted;
     }
 
     private async Task<IResult> CheckMoneyPointExsist(int id)
     {
-        var product = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().GetByIdAsync(id);
+        var product = await _moneyPointRepository.GetByIdAsync(id);
         if (product is null)
         {
             return new ErrorResult(Messages.MoneyPointNotFound);

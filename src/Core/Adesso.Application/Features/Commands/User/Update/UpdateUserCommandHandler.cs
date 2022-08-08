@@ -13,11 +13,15 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, strin
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.User> _userRepository;
+
 
     public UpdateUserCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userRepository = _unitOfWork.GetRepository<Domain.Models.User>();
+
     }
 
     public async Task<string> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
@@ -31,7 +35,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, strin
         var user = _mapper.Map<Domain.Models.User>(request);
         user.Password = PasswordEncryptor.Encrypt(user.Password);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.User>().UpdateAsync(user);
+        var rows = await _userRepository.UpdateAsync(user);
 
         return Messages.UserUpdated;
     }
@@ -40,7 +44,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, strin
 
     private async Task<IResult> CheckUserExsist(int id)
     {
-        var user = await _unitOfWork.GetRepository<Domain.Models.User>().GetByIdAsync(id);
+        var user = await _userRepository.GetByIdAsync(id);
         if (user is null)
         {
             return new ErrorResult(Messages.UserNotFound);
@@ -50,7 +54,7 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, strin
 
     private async Task<IResult> CheckEmailAddressExist(string emailAddress)
     {
-        var user = await _unitOfWork.GetRepository<Domain.Models.User>().GetSingleAsync(u => u.EmailAddress == emailAddress);
+        var user = await _userRepository.GetSingleAsync(u => u.EmailAddress == emailAddress);
         if (user is not null)
         {
             return new ErrorResult(Messages.UserEmailAddressNotAvailable);

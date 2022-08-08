@@ -12,11 +12,17 @@ public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCo
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.MoneyPoint> _moneyPointRepository;
+    private IGenericRepository<Domain.Models.Category> _categoryRepository;
+
 
     public UpdateMoneyPointCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _moneyPointRepository = _unitOfWork.GetRepository<Domain.Models.MoneyPoint>();
+        _categoryRepository = _unitOfWork.GetRepository<Domain.Models.Category>();
+
     }
 
     public async Task<string> Handle(UpdateMoneyPointCommand request, CancellationToken cancellationToken)
@@ -29,7 +35,7 @@ public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCo
 
         var product = _mapper.Map<Domain.Models.MoneyPoint>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().UpdateAsync(product);
+        var rows = await _moneyPointRepository.UpdateAsync(product);
 
         return Messages.MoneyPointUpdated;
     }
@@ -37,7 +43,7 @@ public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCo
 
     private async Task<IResult> CheckMoneyPointExist(int id)
     {
-        var moneyPoint = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().GetByIdAsync(id);
+        var moneyPoint = await _moneyPointRepository.GetByIdAsync(id);
         if (moneyPoint is null)
         {
             return new ErrorResult(Messages.MoneyPointNotFound);
@@ -47,8 +53,8 @@ public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCo
 
     private async Task<IResult> CheckCategoryExist(int categoryId)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Category>().GetByIdAsync(categoryId);
-        var moneyPoint = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>()
+        var category = await _categoryRepository.GetByIdAsync(categoryId);
+        var moneyPoint = await _moneyPointRepository
             .GetSingleAsync(i => i.CategoryId == categoryId);
 
         if (category is null)

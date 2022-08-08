@@ -12,11 +12,15 @@ public class UpdateUserDetailCommandHandler : IRequestHandler<UpdateUserDetailCo
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.UserDetail> _userDetailRepository;
+    private IGenericRepository<Domain.Models.User> _userRepository;
 
     public UpdateUserDetailCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userDetailRepository = _unitOfWork.GetRepository<Domain.Models.UserDetail>();
+        _userRepository = _unitOfWork.GetRepository<Domain.Models.User>();
     }
 
     public async Task<string> Handle(UpdateUserDetailCommand request, CancellationToken cancellationToken)
@@ -29,7 +33,7 @@ public class UpdateUserDetailCommandHandler : IRequestHandler<UpdateUserDetailCo
 
         var user = _mapper.Map<Domain.Models.UserDetail>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.UserDetail>().UpdateAsync(user);
+        var rows = await _userDetailRepository.UpdateAsync(user);
 
         return Messages.UserDetailUpdated;
     }
@@ -38,7 +42,7 @@ public class UpdateUserDetailCommandHandler : IRequestHandler<UpdateUserDetailCo
 
     private async Task<IResult> CheckUserExist(int userId)
     {
-        var user = await _unitOfWork.GetRepository<Domain.Models.User>()
+        var user = await _userRepository
             .GetSingleAsync(u => u.Id == userId);
         
 
@@ -52,7 +56,7 @@ public class UpdateUserDetailCommandHandler : IRequestHandler<UpdateUserDetailCo
 
     private async Task<IResult> CheckUserDetailExist(int id)
     {
-        var userDetail = await _unitOfWork.GetRepository<Domain.Models.UserDetail>().GetByIdAsync(id);
+        var userDetail = await _userDetailRepository.GetByIdAsync(id);
         if (userDetail is null)
         {
             return new ErrorResult(Messages.UserDetailNotFound);

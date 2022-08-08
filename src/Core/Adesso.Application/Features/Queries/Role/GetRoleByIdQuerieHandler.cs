@@ -12,16 +12,19 @@ public class GetRoleByIdQuerieHandler : IRequestHandler<GetRoleByIdQuerie, RoleD
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.Role> _roleRepository;
+
 
     public GetRoleByIdQuerieHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _roleRepository = _unitOfWork.GetRepository<Domain.Models.Role>();
     }
 
     public async Task<RoleDto> Handle(GetRoleByIdQuerie request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Role>().GetByIdAsync(request.Id);
+        var category = await _roleRepository.GetByIdAsync(request.Id);
 
         var result = _mapper.Map<RoleDto>(category);
 

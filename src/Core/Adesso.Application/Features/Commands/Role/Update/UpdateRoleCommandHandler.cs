@@ -12,11 +12,15 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, strin
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.Role> _roleRepository;
+
 
     public UpdateRoleCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _roleRepository = _unitOfWork.GetRepository<Domain.Models.Role>();
+
     }
 
     public async Task<string> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
@@ -29,7 +33,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, strin
 
         var product = _mapper.Map<Domain.Models.Role>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.Role>().UpdateAsync(product);
+        var rows = await _roleRepository.UpdateAsync(product);
 
         return Messages.RoleUpdated;
     }
@@ -40,7 +44,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, strin
 
     private async Task<IResult> CheckRoleNameExist(string roleName)
     {
-        var role = await _unitOfWork.GetRepository<Domain.Models.Role>()
+        var role = await _roleRepository
             .GetSingleAsync(r => r.RoleName == roleName);
 
         if (role is not null)
@@ -54,7 +58,7 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, strin
 
     private async Task<IResult> CheckRoleExist(int id)
     {
-        var role = await _unitOfWork.GetRepository<Domain.Models.Role>().GetByIdAsync(id);
+        var role = await _roleRepository.GetByIdAsync(id);
         if (role is null)
         {
             return new ErrorResult(Messages.RoleNotFound);

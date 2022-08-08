@@ -12,16 +12,19 @@ public class GetProductByIdQuerieHandler : IRequestHandler<GetProductByIdQuerie,
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.Product> _productRepository;
+
 
     public GetProductByIdQuerieHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _productRepository = _unitOfWork.GetRepository<Domain.Models.Product>();
     }
 
     public async Task<ProductDto> Handle(GetProductByIdQuerie request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Product>().GetByIdAsync(request.Id);
+        var category = await _productRepository.GetByIdAsync(request.Id);
 
         var result = _mapper.Map<ProductDto>(category);
 

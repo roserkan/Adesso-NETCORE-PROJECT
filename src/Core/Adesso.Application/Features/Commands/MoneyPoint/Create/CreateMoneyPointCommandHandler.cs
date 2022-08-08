@@ -12,11 +12,17 @@ public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCo
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.MoneyPoint> _moneyPointRepository;
+    private IGenericRepository<Domain.Models.Category> _categoryRepository;
+
 
     public CreateMoneyPointCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _moneyPointRepository = _unitOfWork.GetRepository<Domain.Models.MoneyPoint>();
+        _categoryRepository = _unitOfWork.GetRepository<Domain.Models.Category>();
+
     }
 
     public async Task<string> Handle(CreateMoneyPointCommand request, CancellationToken cancellationToken)
@@ -28,7 +34,7 @@ public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCo
 
         var moneyPoint = _mapper.Map<Domain.Models.MoneyPoint>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().AddAsync(moneyPoint);
+        var rows = await _moneyPointRepository.AddAsync(moneyPoint);
 
         return Messages.MoneyPointCreated;
     }
@@ -36,8 +42,8 @@ public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCo
 
     private async Task<IResult> CheckCategoryExist(int categoryId)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Category>().GetByIdAsync(categoryId);
-        var moneyPoint = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>()
+        var category = await _categoryRepository.GetByIdAsync(categoryId);
+        var moneyPoint = await _moneyPointRepository
             .GetSingleAsync(i => i.CategoryId == categoryId);
 
         if (category is null)

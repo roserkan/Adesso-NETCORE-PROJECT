@@ -12,11 +12,15 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.Product> _productRepository;
+    private IGenericRepository<Domain.Models.Category> _categoryRepository;
 
     public UpdateProductCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _productRepository = _unitOfWork.GetRepository<Domain.Models.Product>();
+        _categoryRepository = _unitOfWork.GetRepository<Domain.Models.Category>();
     }
 
     public async Task<string> Handle(UpdateProductCommand request, CancellationToken cancellationToken)

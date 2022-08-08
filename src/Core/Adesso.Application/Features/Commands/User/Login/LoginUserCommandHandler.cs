@@ -17,17 +17,21 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, LoginUs
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IConfiguration _configuration;
+    private IGenericRepository<Domain.Models.User> _userRepository;
+
 
     public LoginUserCommandHandler(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _configuration = configuration;
+        _userRepository = _unitOfWork.GetRepository<Domain.Models.User>();
+
     }
 
     public async Task<LoginUserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        var dbUser = await _unitOfWork.GetRepository<Domain.Models.User>().GetSingleAsync(i => i.EmailAddress == request.EmailAddress);
+        var dbUser = await _userRepository.GetSingleAsync(i => i.EmailAddress == request.EmailAddress);
         if (dbUser == null)
             throw new DatabaseValidationException(Messages.UserNotFound);
 

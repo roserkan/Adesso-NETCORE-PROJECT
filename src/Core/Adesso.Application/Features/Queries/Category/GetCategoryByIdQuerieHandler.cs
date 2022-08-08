@@ -12,16 +12,20 @@ public class GetCategoryByIdQuerieHandler : IRequestHandler<GetCategoryByIdQueri
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.Category> _categoryRepository;
+
 
     public GetCategoryByIdQuerieHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _categoryRepository = unitOfWork.GetRepository<Domain.Models.Category>();
+
     }
 
     public async Task<CategoryDto> Handle(GetCategoryByIdQuerie request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Category>().GetByIdAsync(request.Id);
+        var category = await _categoryRepository.GetByIdAsync(request.Id);
 
         var result = _mapper.Map<CategoryDto>(category);
 

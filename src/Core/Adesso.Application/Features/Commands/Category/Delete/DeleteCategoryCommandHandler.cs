@@ -11,11 +11,14 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.Category> _categoryRepository;
+
 
     public DeleteCategoryCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _categoryRepository = _unitOfWork.GetRepository<Domain.Models.Category>();
     }
 
     public async Task<string> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
@@ -25,14 +28,14 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
 
         var category = _mapper.Map<Domain.Models.Category>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.Category>().DeleteAsync(category);
+        var rows = await _categoryRepository.DeleteAsync(category);
 
         return Messages.CategoryDeleted;
     }
 
     private async Task<IResult> CheckCategoryExsist(int id)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Category>().GetByIdAsync(id);
+        var category = await _categoryRepository.GetByIdAsync(id);
         if (category is null)
         {
             return new ErrorResult(Messages.CategoryIdNotFound);

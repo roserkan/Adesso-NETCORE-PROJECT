@@ -12,11 +12,14 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.Category> _categoryRepository;
+    
 
     public CreateCategoryCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _categoryRepository = unitOfWork.GetRepository<Domain.Models.Category>();
     }
 
     public async Task<string> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
@@ -25,14 +28,14 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 
         var category = _mapper.Map<Domain.Models.Category>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.Category>().AddAsync(category);
+        var rows = await _categoryRepository.AddAsync(category);
 
         return Messages.CategoryCreated;
     }
 
     private async Task<IResult> CheckCategoryNameExist(string name)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.Category>().GetSingleAsync(c => c.Name == name);
+        var category = await _categoryRepository.GetSingleAsync(c => c.Name == name);
         if (category is not null)
         {
             return new ErrorResult(Messages.CategoryNameAlreadyExist);

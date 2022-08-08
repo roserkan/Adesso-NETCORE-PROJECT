@@ -12,11 +12,17 @@ public class CreateUserDetailCommandHandler : IRequestHandler<CreateUserDetailCo
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private IGenericRepository<Domain.Models.UserDetail> _userDetailRepository;
+    private IGenericRepository<Domain.Models.User> _userRepository;
+
 
     public CreateUserDetailCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userDetailRepository = _unitOfWork.GetRepository<Domain.Models.UserDetail>();
+        _userRepository = _unitOfWork.GetRepository<Domain.Models.User>();
+
     }
 
     public async Task<string> Handle(CreateUserDetailCommand request, CancellationToken cancellationToken)
@@ -27,16 +33,16 @@ public class CreateUserDetailCommandHandler : IRequestHandler<CreateUserDetailCo
       
 
         var user = _mapper.Map<Domain.Models.UserDetail>(request);
-        var rows = await _unitOfWork.GetRepository<Domain.Models.UserDetail>().AddAsync(user);
+        var rows = await _userDetailRepository.AddAsync(user);
 
         return Messages.UserDetailCreated;
     }
 
     private async Task<IResult> CheckUserExist(int userId)
     {
-        var user = await _unitOfWork.GetRepository<Domain.Models.User>()
+        var user = await _userRepository
             .GetSingleAsync(u => u.Id == userId);
-        var userDetail = await _unitOfWork.GetRepository<Domain.Models.UserDetail>()
+        var userDetail = await _userDetailRepository
             .GetSingleAsync(u => u.UserId == userId);
 
         if (user is null)

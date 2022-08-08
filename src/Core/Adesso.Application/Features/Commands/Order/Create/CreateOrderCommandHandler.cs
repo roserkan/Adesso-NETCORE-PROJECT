@@ -13,11 +13,21 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private IGenericRepository<Domain.Models.Order> _orderRepository;
+    private IGenericRepository<Domain.Models.OrderItem> _orderItemRepository;
+    private IGenericRepository<Domain.Models.Product> _productRepository;
+    private IGenericRepository<Domain.Models.User> _userRepository;
+
 
     public CreateOrderCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _orderRepository = _unitOfWork.GetRepository<Domain.Models.Order>();
+        _orderItemRepository = _unitOfWork.GetRepository<Domain.Models.OrderItem>();
+        _productRepository = _unitOfWork.GetRepository<Domain.Models.Product>();
+        _userRepository = _unitOfWork.GetRepository<Domain.Models.User>();
+
     }
 
     public async Task<string> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
@@ -31,11 +41,11 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
 
         var order = GetOrder(request.UserId);
 
-        var orderId = await _unitOfWork.GetRepository<Domain.Models.Order>().AddAsync(order);
+        var orderId = await _orderRepository.AddAsync(order);
 
         var orderItems = GetOrderItems(orderId, request.CreateOrderItemDtos);
        
-        await _unitOfWork.GetRepository<Domain.Models.OrderItem>().BulkAdd(orderItems);
+        await _orderItemRepository.BulkAdd(orderItems);
 
         // İşlemler başarılı ise Siparişin total fiyatı ve ürünün stok adedi güncellenmelidir.
         await UpdateOrderTotal(request.CreateOrderItemDtos);
@@ -80,13 +90,13 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
         decimal total = 0;
         foreach (var orderItem in orderItems)
         {
-            var product =  await _unitOfWork.GetRepository<Domain.Models.Product>().GetByIdAsync(orderItem.ProductId);
+            var product =  await _productRepository.GetByIdAsync(orderItem.ProductId);
             decimal price = (decimal)product.Price;
             decimal quantity = orderItem.Quantity;
             total += price * quantity;
         }
 
-        var order = await _unitOfWork.GetRepository<Domain.Models.Order>().GetByIdAsync(orderItems[0].OrderId);
+        var order = await _orderRepository.GetByIdAsync(orderItems[0].OrderId);
         order.Total = total;
         await _unitOfWork.GetRepository<Domain.Models.Order>().UpdateAsync(order);
     }
@@ -95,10 +105,10 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
     {
         foreach (var orderItem in orderItems)
         {
-            var product = await _unitOfWork.GetRepository<Domain.Models.Product>().GetByIdAsync(orderItem.ProductId);
+            var product = await _productRepository.GetByIdAsync(orderItem.ProductId);
             int newStock = product.Stock - orderItem.Quantity;
             product.Stock = newStock;
-            await _unitOfWork.GetRepository<Domain.Models.Product>().UpdateAsync(product);
+            await _productRepository.UpdateAsync(product);
         }
     }
 
@@ -106,7 +116,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
 
     private async Task<IResult> CheckUserExist(int userId)
     {
-        var user = await _unitOfWork.GetRepository<Domain.Models.User>().GetByIdAsync(userId);
+        var user = await _userRepository.GetByIdAsync(userId);
         if (user is null)
         {
             return new ErrorResult(Messages.UserNotFound);
@@ -116,7 +126,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
 
     private async Task<IResult> CheckOrderExist(List<int> orderIds)
     {
-        var order = await _unitOfWork.GetRepository<Domain.Models.Order>().GetByIdAsync(orderIds[0]);
+        var order = await _orderRepository.GetByIdAsync(orderIds[0]);
         if (order is null)
         {
             return new ErrorResult(Messages.OrderNotFound);
@@ -128,7 +138,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
     {
         foreach (var productId in productIds)
         {
-            var product = await _unitOfWork.GetRepository<Domain.Models.Product>().GetByIdAsync(productId);
+            var product = await _productRepository.GetByIdAsync(productId);
             if (product is null)
             {
                 return new ErrorResult(Messages.ProductNotFound);
@@ -142,7 +152,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
     {
         foreach (var orderItem in orderItems)
         {
-            var product = await _unitOfWork.GetRepository<Domain.Models.Product>().GetByIdAsync(orderItem.ProductId);
+            var product = await _productRepository.GetByIdAsync(orderItem.ProductId);
             if (product is null)
             {
                 return new ErrorResult(Messages.ProductNotFound);

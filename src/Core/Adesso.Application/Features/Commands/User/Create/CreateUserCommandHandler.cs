@@ -17,11 +17,14 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, strin
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private IGenericRepository<Domain.Models.User> _userRepository;
+
 
     public CreateUserCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userRepository = _unitOfWork.GetRepository<Domain.Models.User>();
     }
 
     public async Task<string> Handle(CreateUserCommand request, CancellationToken cancellationToken)
@@ -30,14 +33,14 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, strin
 
         var user = _mapper.Map<Domain.Models.User>(request);
         user.Password = PasswordEncryptor.Encrypt(user.Password);
-        var rows = await _unitOfWork.GetRepository<Domain.Models.User>().AddAsync(user);
+        var rows = await _userRepository.AddAsync(user);
 
         return Messages.UserCreated;
     }
 
     private async Task<IResult> CheckEmailAddressExist(string emailAddress)
     {
-        var user = await _unitOfWork.GetRepository<Domain.Models.User>().GetSingleAsync(u => u.EmailAddress == emailAddress);
+        var user = await _userRepository.GetSingleAsync(u => u.EmailAddress == emailAddress);
         if (user is not null)
         {
             return new ErrorResult(Messages.UserEmailAddressNotAvailable);

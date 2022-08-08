@@ -12,16 +12,20 @@ public class GetMoneyPointByIdQuerieHandler : IRequestHandler<GetMoneyPointByIdQ
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.MoneyPoint> _moneyPointRepository;
+
 
     public GetMoneyPointByIdQuerieHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _moneyPointRepository = unitOfWork.GetRepository<Domain.Models.MoneyPoint>();
+
     }
 
     public async Task<MoneyPointDto> Handle(GetMoneyPointByIdQuerie request, CancellationToken cancellationToken)
     {
-        var category = await _unitOfWork.GetRepository<Domain.Models.MoneyPoint>().GetByIdAsync(request.Id);
+        var category = await _moneyPointRepository.GetByIdAsync(request.Id);
 
         var result = _mapper.Map<MoneyPointDto>(category);
 

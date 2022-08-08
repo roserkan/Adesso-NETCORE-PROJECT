@@ -10,11 +10,15 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private IGenericRepository<Domain.Models.Product> _productRepository;
+
 
     public DeleteProductCommandHandler(IMapper mapper, IUnitOfWork unitOfWork)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _productRepository = _unitOfWork.GetRepository<Domain.Models.Product>();
+
     }
 
     public async Task<string> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
@@ -25,14 +29,14 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
 
         var product = _mapper.Map<Domain.Models.Product>(request);
 
-        var rows = await _unitOfWork.GetRepository<Domain.Models.Product>().DeleteAsync(product);
+        var rows = await _productRepository.DeleteAsync(product);
 
         return Messages.ProductDeleted;
     }
 
     private async Task<IResult> CheckProductExsist(int id)
     {
-        var product = await _unitOfWork.GetRepository<Domain.Models.Product>().GetByIdAsync(id);
+        var product = await _productRepository.GetByIdAsync(id);
         if (product is null)
         {
             return new ErrorResult(Messages.ProductIdNotFound);

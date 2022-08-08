@@ -10,16 +10,18 @@ public class GetAllUserDetailsQuerieHandler : IRequestHandler<GetAllUserDetailsQ
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
+    private readonly IGenericRepository<Domain.Models.UserDetail> _userDetailRepository;
 
     public GetAllUserDetailsQuerieHandler(IUnitOfWork unitOfWork, IMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _userDetailRepository = _unitOfWork.GetRepository<Domain.Models.UserDetail>();
     }
 
     public async Task<List<UserDetailDto>> Handle(GetAllUserDetailsQuerie request, CancellationToken cancellationToken)
     {
-        var categories = await _unitOfWork.GetRepository<Domain.Models.UserDetail>().GetAll();
+        var categories = await _userDetailRepository.GetAll();
 
         var result = _mapper.Map<List<UserDetailDto>>(categories);
 
