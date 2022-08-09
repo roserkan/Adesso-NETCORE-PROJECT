@@ -1,6 +1,7 @@
 using Adesso.Application.Extensions;
 using Adesso.Infrastructure.Persistence.Extensions;
 using FluentValidation.AspNetCore;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,12 @@ builder.Services.AddApplicationRegistration();
 builder.Services.AddInfrastructureRegistration(builder.Configuration);
 builder.Services.ConfigureAuth(builder.Configuration);
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AllowedAdmin", policy =>
+        policy.RequireClaim(ClaimTypes.Role, "Admin", "User"));
+});
+
 
 var app = builder.Build();
 
@@ -32,12 +39,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-
-app.UseAuthentication();
-app.UseAuthorization();
 app.ErrorHandlerMiddleware();
-
+app.UseAuthentication();
+app.UseAuthorization(); // 401
 app.MapControllers();
 
 

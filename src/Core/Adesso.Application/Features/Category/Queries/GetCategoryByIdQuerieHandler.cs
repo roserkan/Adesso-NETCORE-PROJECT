@@ -30,7 +30,7 @@ public class GetCategoryByIdQuerieHandler : IRequestHandler<GetCategoryByIdQueri
         var result = _mapper.Map<CategoryDto>(category);
 
         if (result is null)
-            throw new DatabaseValidationException(Messages.CategoryIdNotNull);
+            throw new DatabaseValidationException(Messages.CategoryIdNotFound);
 
         return result;
     }

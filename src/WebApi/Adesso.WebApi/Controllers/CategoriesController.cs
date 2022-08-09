@@ -5,6 +5,7 @@ using Adesso.Application.Features.Category.Commands.Update;
 using Adesso.Application.Features.Category.Queries;
 using Adesso.Application.Utilities.Results;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Adesso.WebApi.Controllers;
@@ -22,6 +23,7 @@ public class CategoriesController : BaseController
     }
 
     [HttpGet]
+    //[Authorize("AllowedAdmin")]
     public async Task<IActionResult> GetAllCateories()
     {
         var result = await _mediator.Send(new GetAllCategoriesQuerie());

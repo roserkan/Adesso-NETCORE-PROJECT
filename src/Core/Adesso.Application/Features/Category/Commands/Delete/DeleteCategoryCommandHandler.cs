@@ -27,8 +27,8 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
        
 
         var category = _mapper.Map<Domain.Models.Category>(request);
-
-        var rows = await _categoryRepository.DeleteAsync(category);
+        category.IsDeleted = true;
+        var rows = await _categoryRepository.UpdateAsync(category);
 
         return Messages.CategoryDeleted;
     }

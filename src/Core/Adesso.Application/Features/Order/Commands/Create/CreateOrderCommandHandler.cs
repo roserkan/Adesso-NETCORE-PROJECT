@@ -35,7 +35,6 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
                 await CheckUserExist(request.UserId),
                 await CheckProductExist(request.CreateOrderItemDtos.Select(i => i.ProductId).ToList()),
                 await CheckQuantityProficiencyForProduct(request.CreateOrderItemDtos)
-
             );
 
         var order = GetOrder(request.UserId);

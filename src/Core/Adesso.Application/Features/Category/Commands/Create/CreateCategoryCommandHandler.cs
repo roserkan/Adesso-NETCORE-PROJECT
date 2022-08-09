@@ -29,7 +29,7 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         var category = _mapper.Map<Domain.Models.Category>(request);
 
         var rows = await _categoryRepository.AddAsync(category);
-
+        
         return Messages.CategoryCreated;
     }
 

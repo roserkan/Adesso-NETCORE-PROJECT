@@ -11,7 +11,9 @@ public abstract class BaseEntityConfiguration<T> : IEntityTypeConfiguration<T> w
         builder.HasKey(i => i.Id);
 
         builder.Property(i => i.Id).ValueGeneratedOnAdd();
+        builder.Property(i => i.IsDeleted).HasDefaultValue(false);
         builder.Property(i => i.CreatedDate).ValueGeneratedOnAdd();
+        builder.HasQueryFilter(i => !i.IsDeleted);
     }
 }
 
