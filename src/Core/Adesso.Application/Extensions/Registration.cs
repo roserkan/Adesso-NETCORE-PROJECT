@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Adesso.Application.Helpers.MediatrPiplines;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -14,6 +15,7 @@ public static class Registration
         services.AddMediatR(assembly);
         services.AddAutoMapper(assembly);
         services.AddValidatorsFromAssembly(assembly);
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(SaveChangesBehaviour<,>));
 
         return services;
     }

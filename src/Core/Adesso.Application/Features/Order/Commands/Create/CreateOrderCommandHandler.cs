@@ -40,6 +40,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
         var order = GetOrder(request.UserId);
 
         var orderId = await _orderRepository.AddAsync(order);
+        _unitOfWork.SaveChanges();
 
         var orderItems = GetOrderItems(orderId, request.CreateOrderItemDtos);
        
@@ -97,6 +98,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
         var order = await _orderRepository.GetByIdAsync(orderItems[0].OrderId);
         order.Total = total;
         await _unitOfWork.GetRepository<Domain.Models.Order>().UpdateAsync(order);
+        _unitOfWork.SaveChanges();
     }
 
     private async Task UpdateProductStock(List<CreateOrderItemDto> orderItems)

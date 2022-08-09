@@ -22,14 +22,15 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
     public virtual async Task<int> AddAsync(TEntity entity)
     {
         await this.entity.AddAsync(entity);
-        await dbContext.SaveChangesAsync();
+        //await dbContext.SaveChangesAsync();
         return entity.Id;   
     }
 
     public virtual int Add(TEntity entity)
     {
         this.entity.Add(entity);
-        return dbContext.SaveChanges();
+        //await dbContext.SaveChangesAsync();
+        return entity.Id;
     }
 
     public virtual async Task<int> AddAsync(IEnumerable<TEntity> entities)
@@ -38,7 +39,8 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             return 0;
 
         await entity.AddRangeAsync(entities);
-        return await dbContext.SaveChangesAsync();
+        //await dbContext.SaveChangesAsync();
+        return 1;
     }
 
     public virtual int Add(IEnumerable<TEntity> entities)
@@ -47,7 +49,8 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             return 0;
 
         entity.AddRange(entity);
-        return dbContext.SaveChanges();
+        //await dbContext.SaveChangesAsync();
+        return 1;
     }
 
     #endregion
@@ -59,7 +62,8 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         this.entity.Attach(entity);
         dbContext.Entry(entity).State = EntityState.Modified;
 
-        return await dbContext.SaveChangesAsync();
+        //await dbContext.SaveChangesAsync();
+        return await Task.Run(() => entity.Id); 
     }
 
     public virtual int Update(TEntity entity)
@@ -67,14 +71,14 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         this.entity.Attach(entity);
         dbContext.Entry(entity).State = EntityState.Modified;
 
-        return dbContext.SaveChanges();
+        return entity.Id;
     }
 
     #endregion
 
     #region Delete Methods
 
-    public virtual Task<int> DeleteAsync(TEntity entity)
+    public async virtual Task<int> DeleteAsync(TEntity entity)
     {
         if (dbContext.Entry(entity).State == EntityState.Detached)
         {
@@ -83,13 +87,13 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 
         this.entity.Remove(entity);
 
-        return dbContext.SaveChangesAsync();
+        return await Task.Run(() => entity.Id);
     }
 
-    public virtual Task<int> DeleteAsync(int id)
+    public async virtual Task<int> DeleteAsync(int id)
     {
         var entity = this.entity.Find(id);
-        return DeleteAsync(entity);
+        return await DeleteAsync(entity);
     }
 
     public virtual int Delete(int id)
@@ -107,32 +111,32 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 
         this.entity.Remove(entity);
 
-        return dbContext.SaveChanges();
+        return entity.Id;
     }
 
     public virtual bool DeleteRange(Expression<Func<TEntity, bool>> predicate)
     {
         dbContext.RemoveRange(entity.Where(predicate));
-        return dbContext.SaveChanges() > 0;
+        return true;
     }
 
     public virtual async Task<bool> DeleteRangeAsync(Expression<Func<TEntity, bool>> predicate)
     {
         dbContext.RemoveRange(entity.Where(predicate));
-        return await dbContext.SaveChangesAsync() > 0;
+        return await Task.Run(() => true);
     }
 
     #endregion
 
     #region AddOrUpdate Methods
 
-    public virtual Task<int> AddOrUpdateAsync(TEntity entity)
+    public async virtual Task<int> AddOrUpdateAsync(TEntity entity)
     {
         // check the entity with the id already tracked
         if (!this.entity.Local.Any(i => EqualityComparer<int>.Default.Equals(i.Id, entity.Id)))
             dbContext.Update(entity);
 
-        return dbContext.SaveChangesAsync();
+        return await Task.Run(() => entity.Id);
     }
 
     public virtual int AddOrUpdate(TEntity entity)
@@ -140,7 +144,7 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         if (!this.entity.Local.Any(i => EqualityComparer<int>.Default.Equals(i.Id, entity.Id)))
             dbContext.Update(entity);
 
-        return dbContext.SaveChanges();
+        return entity.Id;
     }
 
     #endregion
@@ -248,13 +252,13 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             return Task.CompletedTask;
 
         dbContext.RemoveRange(entity.Where(i => ids.Contains(i.Id)));
-        return dbContext.SaveChangesAsync();
+        return Task.Run(() => 1);
     }
 
     public virtual Task BulkDelete(Expression<Func<TEntity, bool>> predicate)
     {
         dbContext.RemoveRange(entity.Where(predicate));
-        return dbContext.SaveChangesAsync();
+        return Task.Run(() => 1);
     }
 
     public virtual Task BulkDelete(IEnumerable<TEntity> entities)
@@ -263,7 +267,7 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             return Task.CompletedTask;
 
         entity.RemoveRange(entities);
-        return dbContext.SaveChangesAsync();
+        return Task.Run(() => 1);
     }
 
     public virtual Task BulkUpdate(IEnumerable<TEntity> entities)
@@ -276,7 +280,7 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             entity.Update(entityItem);
         }
 
-        return dbContext.SaveChangesAsync();
+        return Task.Run(() => 1);
     }
 
     public virtual async Task BulkAdd(IEnumerable<TEntity> entities)
@@ -285,8 +289,7 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
             await Task.CompletedTask;
 
         await entity.AddRangeAsync(entities);
-
-        await dbContext.SaveChangesAsync();
+       
     }
 
     #endregion

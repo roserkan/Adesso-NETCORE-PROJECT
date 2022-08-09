@@ -1,6 +1,8 @@
-﻿using Adesso.Application.Interfaces.Repositories;
+﻿using Adesso.Application.Helpers.MediatrPiplines;
+using Adesso.Application.Interfaces.Repositories;
 using Adesso.Infrastructure.Persistence.Contexts;
 using Adesso.Infrastructure.Persistence.Repositories.EFCore;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
