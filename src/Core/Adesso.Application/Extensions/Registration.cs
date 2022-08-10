@@ -1,4 +1,6 @@
-﻿using Adesso.Application.Helpers.MediatrPiplines;
+﻿using Adesso.Application.CrossCuttingConcerns.Caching;
+using Adesso.Application.CrossCuttingConcerns.Caching.Microsoft;
+using Adesso.Application.Helpers.MediatrPiplines;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +17,14 @@ public static class Registration
         services.AddMediatR(assembly);
         services.AddAutoMapper(assembly);
         services.AddValidatorsFromAssembly(assembly);
+        services.AddMemoryCache();
+        services.AddSingleton<ICacheManager, MemoryCacheManager>();
+
+
+
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(SaveChangesBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehaviour<,>));
+
 
         return services;
     }

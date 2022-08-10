@@ -38,12 +38,12 @@ public class ProductsController : BaseController
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
+    public  async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
     {
         var result = await _mediator.Send(command);
         return Ok(new SuccessDataResult<CreateProductCommand>(command, result));
     }
-
+        
     [HttpPut("{id:int}")]
     public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductCommand command)
     {

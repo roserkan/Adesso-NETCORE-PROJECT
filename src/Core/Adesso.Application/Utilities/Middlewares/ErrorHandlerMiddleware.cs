@@ -18,7 +18,10 @@ public class ErrorHandlerMiddleware
     {
         try
         {
+            var response = context.Response;
+            response.ContentType = "application/json";
             await _next(context);
+
         }
         catch (Exception error)
         {
