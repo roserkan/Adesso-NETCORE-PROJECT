@@ -1,14 +1,14 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.Category;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Business;
-using Adesso.Application.Utilities.Results;
 using AutoMapper;
 using MediatR;
 
 
 namespace Adesso.Application.Features.Category.Commands.Create;
 
-public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, string>
+public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, CreatedCategoryDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -22,24 +22,25 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
         _categoryRepository = unitOfWork.GetRepository<Domain.Models.Category>();
     }
 
-    public async Task<string> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<CreatedCategoryDto> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
     {
-        IResult result = BusinessRules.Run(await CheckCategoryNameExist(request.Name));
+
+        await this.CheckCategoryNameExist(request.Name);
+
 
         var category = _mapper.Map<Domain.Models.Category>(request);
+        await _categoryRepository.AddAsync(category);
+        var createdBrandDto = _mapper.Map<CreatedCategoryDto>(category);
+        //await _unitOfWork.SaveChangesAsync(); // for init ID
+        return createdBrandDto;
+            
 
-        var rows = await _categoryRepository.AddAsync(category);
-        return Messages.CategoryCreated;
     }
 
-    private async Task<IResult> CheckCategoryNameExist(string name)
+    private async Task CheckCategoryNameExist(string name)
     {
         var category = await _categoryRepository.GetSingleAsync(c => c.Name == name);
-        if (category is not null)
-        {
-            return new ErrorResult(Messages.CategoryNameAlreadyExist);
-        }
-        return new SuccessResult();
+        if (category is not null) throw new BusinessException(Messages.CategoryNameAlreadyExist);
     }
 
 }

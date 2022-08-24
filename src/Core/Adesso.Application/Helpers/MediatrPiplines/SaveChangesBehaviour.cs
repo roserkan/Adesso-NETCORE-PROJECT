@@ -6,17 +6,17 @@ namespace Adesso.Application.Helpers.MediatrPiplines;
 
 public class SaveChangesBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
-    private readonly IUnitOfWork _uniOfWork;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public SaveChangesBehaviour(IUnitOfWork uniOfWork)
+    public SaveChangesBehaviour(IUnitOfWork unitOfWork)
     {
-        _uniOfWork = uniOfWork;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
     {
         var response = await next();
-        _uniOfWork.SaveChanges();
+        await _unitOfWork.SaveChangesAsync();
         return response;
     }
 }

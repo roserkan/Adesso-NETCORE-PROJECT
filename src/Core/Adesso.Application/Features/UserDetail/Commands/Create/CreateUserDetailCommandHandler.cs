@@ -1,4 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.UserDetail;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
@@ -8,7 +10,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.UserDetail.Commands.Create;
 
-public class CreateUserDetailCommandHandler : IRequestHandler<CreateUserDetailCommand, string>
+public class CreateUserDetailCommandHandler : IRequestHandler<CreateUserDetailCommand, CreatedUserDetailDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -25,42 +27,28 @@ public class CreateUserDetailCommandHandler : IRequestHandler<CreateUserDetailCo
 
     }
 
-    public async Task<string> Handle(CreateUserDetailCommand request, CancellationToken cancellationToken)
+    public async Task<CreatedUserDetailDto> Handle(CreateUserDetailCommand request, CancellationToken cancellationToken)
     {
-        IResult result = BusinessRules.Run(
-                await CheckUserExist(request.UserId)
-            );
+        await this.CheckUserExist(request.UserId);
       
-
-        var user = _mapper.Map<Domain.Models.UserDetail>(request);
-        var rows = await _userDetailRepository.AddAsync(user);
-
-        return Messages.UserDetailCreated;
+        var userDetail = _mapper.Map<Domain.Models.UserDetail>(request);
+        await _userDetailRepository.AddAsync(userDetail);
+        var createdUserDetailDto = _mapper.Map<CreatedUserDetailDto>(request);
+        return createdUserDetailDto;
     }
 
-    private async Task<IResult> CheckUserExist(int userId)
+    private async Task CheckUserExist(int userId)
     {
         var user = await _userRepository
             .GetSingleAsync(u => u.Id == userId);
         var userDetail = await _userDetailRepository
             .GetSingleAsync(u => u.UserId == userId);
 
-        if (user is null)
-        {
-            return new ErrorResult(Messages.UserNotFound);
-        }
+        if (user is null) throw new BusinessException(Messages.UserNotFound);
 
-        if (userDetail is not null)
-        {
-            return new ErrorResult(Messages.UserDetailAlreadyExist);
-        }
-        return new SuccessResult();
+        if (userDetail is not null) throw new BusinessException(Messages.UserDetailAlreadyExist);
+
     }
-
-
-
-
-
 
 
 }

@@ -1,11 +1,11 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Adesso.Application.Utilities.Results;
 using Adesso.Application.Dtos.MoneyPoint;
 using Adesso.Application.Features.MoneyPoint.Queries;
 using Adesso.Application.Features.MoneyPoint.Commands.Create;
 using Adesso.Application.Features.MoneyPoint.Commands.Update;
 using Adesso.Application.Features.MoneyPoint.Commands.Delete;
+using Adesso.Application.Constants;
 
 namespace Adesso.WebApi.Controllers;
 
@@ -14,43 +14,39 @@ namespace Adesso.WebApi.Controllers;
 public class MoneyPointsController : BaseController
 {
 
-    private readonly IMediator _mediator;
-
-    public MoneyPointsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAllMoneyPoints()
+    public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllMoneyPointsQuerie());
-        return Ok(new SuccessDataResult<List<MoneyPointDto>>(result));
+        var data = await Mediator.Send(new GetAllMoneyPointsQuerie());
+        var result = new SuccessDataResult<List<MoneyPointDto>>(data);
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetMoneyPointById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var result = await _mediator.Send(new GetMoneyPointByIdQuerie(id));
-        return Ok(new SuccessDataResult<MoneyPointDto>(result));
+        var data = await Mediator.Send(new GetMoneyPointByIdQuerie(id));
+        var result = new SuccessDataResult<MoneyPointDto>(data);
+        return Ok(result);
     }
 
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateMoneyPoint([FromBody] CreateMoneyPointCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateMoneyPointCommand command)
     {
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<CreateMoneyPointCommand>(command, result));
+        await Mediator.Send(command); // return type: CreatedMoneyPointDto
+        var result = new SuccessResult(Messages.MoneyPointCreated);
+        return Created("", result);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateMoneyPoint(int id, [FromBody] UpdateMoneyPointCommand command)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateMoneyPointCommand command)
     {
         command.Id = id;
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<UpdateMoneyPointCommand>(command, result));
-
+        await Mediator.Send(command); // return type: UpdatedMoneyPointDto
+        var result = new SuccessResult(Messages.MoneyPointUpdated);
+        return Ok(result);
     }
 
 
@@ -58,7 +54,8 @@ public class MoneyPointsController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var command = new DeleteMoneyPointCommand(id);
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<DeleteMoneyPointCommand>(command, result));
+        await Mediator.Send(command); // return type: DeletedMoneyPointDto
+        var result = new SuccessResult(Messages.MoneyPointDeleted);
+        return Ok(result);
     }
 }

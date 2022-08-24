@@ -1,14 +1,13 @@
 ﻿using Adesso.Application.Dtos.User;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Results;
 using Adesso.Application.Utilities.Security;
 using Adesso.Application.Utilities.Security.Jwt;
-using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
 
 namespace Adesso.Application.Features.User.Commands.Login;
 
@@ -33,11 +32,11 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, LoginUs
     {
         var dbUser = await _userRepository.GetSingleAsync(i => i.EmailAddress == request.EmailAddress);
         if (dbUser == null)
-            throw new DatabaseValidationException(Messages.UserNotFound);
+            throw new BusinessException(Messages.UserNotFound);
 
         var encryptedPassword = PasswordEncryptor.Encrypt(request.Password);
         if (dbUser.Password != encryptedPassword)
-            throw new DatabaseValidationException(Messages.PasswordWrongError);
+            throw new BusinessException(Messages.PasswordWrongError);
 
 
 

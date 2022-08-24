@@ -1,14 +1,14 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.Role;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Business;
-using Adesso.Application.Utilities.Results;
 using AutoMapper;
 using MediatR;
 
 
 namespace Adesso.Application.Features.Role.Commands.Delete;
 
-public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, string>
+public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, DeletedRoleDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,27 +23,20 @@ public class DeleteRoleCommandHandler : IRequestHandler<DeleteRoleCommand, strin
 
     }
 
-    public async Task<string> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
+    public async Task<DeletedRoleDto> Handle(DeleteRoleCommand request, CancellationToken cancellationToken)
     {
 
-        IResult result = BusinessRules.Run(
-            await CheckRoleExsist(request.Id)
-            );
+        await this.CheckRoleExsist(request.Id);
 
-        var product = _mapper.Map<Domain.Models.Role>(request);
-
-        var rows = await _roleRepository.DeleteAsync(product);
-
-        return Messages.RoleDeleted;
+        var role = _mapper.Map<Domain.Models.Role>(request);
+        await _roleRepository.DeleteAsync(role);
+        var deletedRole = _mapper.Map<DeletedRoleDto>(role);
+        return deletedRole;
     }
 
-    private async Task<IResult> CheckRoleExsist(int id)
+    private async Task CheckRoleExsist(int id)
     {
         var product = await _roleRepository.GetByIdAsync(id);
-        if (product is null)
-        {
-            return new ErrorResult(Messages.RoleNotFound);
-        }
-        return new SuccessResult();
+        if (product is null) throw new BusinessException(Messages.RoleNotFound);
     }
 }

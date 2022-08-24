@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using System.Security.Claims;
@@ -9,6 +9,11 @@ namespace Adesso.WebApi.Controllers;
 [ApiController]
 public class BaseController : ControllerBase
 {
+    protected IMediator? Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+    private IMediator? _mediator;
+
+
+
     public int? Id
     {
         get

@@ -1,4 +1,5 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.Dtos.Order;
 using Adesso.Application.Dtos.OrderItem;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
@@ -8,7 +9,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Order.Commands.Create;
 
-public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, string>
+public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, CreatedOrderDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -29,29 +30,27 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
 
     }
 
-    public async Task<string> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    public async Task<CreatedOrderDto> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        IResult result = BusinessRules.Run(
-                await CheckUserExist(request.UserId),
-                await CheckProductExist(request.CreateOrderItemDtos.Select(i => i.ProductId).ToList()),
-                await CheckQuantityProficiencyForProduct(request.CreateOrderItemDtos)
-            );
+        await this.CheckUserExist(request.UserId);
+        await this.CheckProductExist(request.CreateOrderItemDtos.Select(i => i.ProductId).ToList());
+        await this.CheckQuantityProficiencyForProduct(request.CreateOrderItemDtos);
 
         var order = GetOrder(request.UserId);
 
         var orderId = await _orderRepository.AddAsync(order);
-        _unitOfWork.SaveChanges();
+        await _unitOfWork.SaveChangesAsync();
 
         var orderItems = GetOrderItems(orderId, request.CreateOrderItemDtos);
        
         await _orderItemRepository.BulkAdd(orderItems);
 
         // İşlemler başarılı ise Siparişin total fiyatı ve ürünün stok adedi güncellenmelidir.
-        await UpdateOrderTotal(request.CreateOrderItemDtos);
-        await UpdateProductStock(request.CreateOrderItemDtos);
+        await this.UpdateOrderTotal(request.CreateOrderItemDtos);
+        await this.UpdateProductStock(request.CreateOrderItemDtos);
 
-
-        return Messages.OrderSuccess;
+        var createdOrderDto = _mapper.Map<CreatedOrderDto>(order);
+        return createdOrderDto;
     }
 
     private Domain.Models.Order GetOrder(int userId)
@@ -98,7 +97,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, str
         var order = await _orderRepository.GetByIdAsync(orderItems[0].OrderId);
         order.Total = total;
         await _unitOfWork.GetRepository<Domain.Models.Order>().UpdateAsync(order);
-        _unitOfWork.SaveChanges();
+        await _unitOfWork.SaveChangesAsync();
     }
 
     private async Task UpdateProductStock(List<CreateOrderItemDto> orderItems)

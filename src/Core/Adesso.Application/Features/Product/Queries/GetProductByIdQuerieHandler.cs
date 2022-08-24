@@ -1,8 +1,7 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
 using Adesso.Application.Dtos.Product;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Results;
-using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -24,12 +23,11 @@ public class GetProductByIdQuerieHandler : IRequestHandler<GetProductByIdQuerie,
 
     public async Task<ProductDto> Handle(GetProductByIdQuerie request, CancellationToken cancellationToken)
     {
-        var category = await _productRepository.GetByIdAsync(request.Id);
+        var product = await _productRepository.GetByIdAsync(request.Id);
 
-        var result = _mapper.Map<ProductDto>(category);
+        var result = _mapper.Map<ProductDto>(product);
 
-        if (result is null)
-            throw new DatabaseValidationException(Messages.ProductNotFound);
+        if (result is null) throw new BusinessException(Messages.ProductNotFound);
 
         return result;
     }

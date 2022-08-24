@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Adesso.Application.Features.Role.Commands.Create;
 
-public class CreateRoleCommandValidator : AbstractValidatorCustom<CreateRoleCommand>
+public class CreateRoleCommandValidator : AbstractValidator<CreateRoleCommand>
 {
     public CreateRoleCommandValidator()
     {

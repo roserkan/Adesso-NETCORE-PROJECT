@@ -36,53 +36,75 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
 
+        //Categories
         CreateMap<Category, CategoryDto>().ReverseMap();
+        CreateMap<Category, CreatedCategoryDto>().ReverseMap();
+        CreateMap<Category, UpdatedCategoryDto>().ReverseMap();
+        CreateMap<Category, DeletedCategoryDto>().ReverseMap();
+
         CreateMap<Category, CreateCategoryCommand>().ReverseMap();
         CreateMap<Category, UpdateCategoryCommand>().ReverseMap();
         CreateMap<Category, DeleteCategoryCommand>().ReverseMap();
 
 
-
+        //Products
         CreateMap<Product, ProductDto>().ReverseMap();
+        CreateMap<Product, CreatedProductDto>().ReverseMap();
+        CreateMap<Product, UpdatedProductDto>().ReverseMap();
+        CreateMap<Product, DeletedProductDto>().ReverseMap();
+
         CreateMap<Product, CreateProductCommand>().ReverseMap();
         CreateMap<Product, UpdateProductCommand>().ReverseMap();
         CreateMap<Product, DeleteProductCommand>().ReverseMap();
 
 
-
-
+        //Users
         CreateMap<User, UserDto>().ReverseMap();
+        CreateMap<User, CreatedUserDto>().ReverseMap();
+        CreateMap<User, UpdatedUserDto>().ReverseMap();
+        CreateMap<User, DeletedUserDto>().ReverseMap();
         CreateMap<User, LoginUserDto>().ReverseMap();
+
         CreateMap<User, CreateUserCommand>().ReverseMap();
         CreateMap<User, UpdateUserCommand>().ReverseMap();
         CreateMap<User, DeleteUserCommand>().ReverseMap();
 
+
+        //UserDetails
         CreateMap<UserDetail, UserDetailDto>().ReverseMap();
+        CreateMap<UserDetail, CreatedUserDetailDto>().ReverseMap();
+        CreateMap<UserDetail, UpdatedUserDetailDto>().ReverseMap();
+        CreateMap<UserDetail, DeletedUserDetailDto>().ReverseMap();
+
         CreateMap<UserDetail, CreateUserDetailCommand>().ReverseMap();
         CreateMap<UserDetail, UpdateUserDetailCommand>().ReverseMap();
         CreateMap<UserDetail, DeleteUserDetailCommand>().ReverseMap();
 
 
+        //Orders
         CreateMap<Order, OrderDto>().ReverseMap();
         CreateMap<Order, CreateOrderItemDto>().ReverseMap();
         CreateMap<Order, CreateOrderCommand>().ReverseMap();
-
-        //CreateMap<Order, UpdateOrderCommand>().ReverseMap();
-        //CreateMap<Order, DeleteOrderCommand>().ReverseMap();
-
         CreateMap<OrderItem, OrderItemDto>().ReverseMap();
 
-        //CreateMap<OrderItem, CreateOrderItemCommand>().ReverseMap();
-        //CreateMap<OrderItem, UpdateOrderItemCommand>().ReverseMap();
-        //CreateMap<OrderItem, DeleteOrderItemCommand>().ReverseMap();
 
+        //MoneyPoints
         CreateMap<MoneyPoint, MoneyPointDto>().ReverseMap();
+        CreateMap<MoneyPoint, CreatedMoneyPointDto>().ReverseMap();
+        CreateMap<MoneyPoint, UpdatedMoneyPointDto>().ReverseMap();
+        CreateMap<MoneyPoint, DeletedMoneyPointDto>().ReverseMap();
+
         CreateMap<MoneyPoint, CreateMoneyPointCommand>().ReverseMap();
         CreateMap<MoneyPoint, UpdateMoneyPointCommand>().ReverseMap();
         CreateMap<MoneyPoint, DeleteMoneyPointCommand>().ReverseMap();
 
 
+        //Roles
         CreateMap<Role, RoleDto>().ReverseMap();
+        CreateMap<Role, CreatedRoleDto>().ReverseMap();
+        CreateMap<Role, UpdatedRoleDto>().ReverseMap();
+        CreateMap<Role, DeletedRoleDto>().ReverseMap();
+
         CreateMap<Role, CreateRoleCommand>().ReverseMap();
         CreateMap<Role, UpdateRoleCommand>().ReverseMap();
         CreateMap<Role, DeleteRoleCommand>().ReverseMap();

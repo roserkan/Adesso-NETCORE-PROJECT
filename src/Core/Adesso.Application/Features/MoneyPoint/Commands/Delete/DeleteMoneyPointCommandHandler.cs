@@ -1,14 +1,14 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.MoneyPoint;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Business;
-using Adesso.Application.Utilities.Results;
 using AutoMapper;
 using MediatR;
 
 
 namespace Adesso.Application.Features.MoneyPoint.Commands.Delete;
 
-public class DeleteMoneyPointCommandHandler : IRequestHandler<DeleteMoneyPointCommand, string>
+public class DeleteMoneyPointCommandHandler : IRequestHandler<DeleteMoneyPointCommand, DeletedMoneyPointDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,26 +23,21 @@ public class DeleteMoneyPointCommandHandler : IRequestHandler<DeleteMoneyPointCo
 
     }
 
-    public async Task<string> Handle(DeleteMoneyPointCommand request, CancellationToken cancellationToken)
+    public async Task<DeletedMoneyPointDto> Handle(DeleteMoneyPointCommand request, CancellationToken cancellationToken)
     {
 
-        IResult result = BusinessRules.Run(
-            await CheckMoneyPointExsist(request.Id)
-            );
-        var product = _mapper.Map<Domain.Models.MoneyPoint>(request);
+        await this.CheckMoneyPointExsist(request.Id);
 
-        var rows = await _moneyPointRepository.DeleteAsync(product);
-
-        return Messages.MoneyPointDeleted;
+        var moneyPoint = _mapper.Map<Domain.Models.MoneyPoint>(request);
+        moneyPoint.IsDeleted = true;
+        await _moneyPointRepository.UpdateAsync(moneyPoint);
+        var deletedMoneyPointDto = _mapper.Map<DeletedMoneyPointDto>(moneyPoint);
+        return deletedMoneyPointDto;
     }
 
-    private async Task<IResult> CheckMoneyPointExsist(int id)
+    private async Task CheckMoneyPointExsist(int id)
     {
-        var product = await _moneyPointRepository.GetByIdAsync(id);
-        if (product is null)
-        {
-            return new ErrorResult(Messages.MoneyPointNotFound);
-        }
-        return new SuccessResult();
+        var moneyPoint = await _moneyPointRepository.GetByIdAsync(id);
+        if (moneyPoint is null) throw new BusinessException(Messages.MoneyPointNotFound);
     }
 }

@@ -1,10 +1,10 @@
-﻿using Adesso.Application.Utilities.Results;
+﻿using Adesso.Application.Dtos.Role;
 using MediatR;
 
 
 namespace Adesso.Application.Features.Role.Commands.Delete;
 
-public class DeleteRoleCommand : IRequest<string>
+public class DeleteRoleCommand : IRequest<DeletedRoleDto>
 {
     public DeleteRoleCommand(int id)
     {

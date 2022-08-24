@@ -1,6 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.Dtos.User;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
 using Adesso.Application.Utilities.Security;
 using AutoMapper;
@@ -9,7 +9,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.User.Commands.Update;
 
-public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, string>
+public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UpdatedUserDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,20 +24,18 @@ public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, strin
 
     }
 
-    public async Task<string> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+    public async Task<UpdatedUserDto> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
     {
 
-        IResult result = BusinessRules.Run(
-                await CheckUserExsist(request.Id),
-                await CheckEmailAddressExist(request.EmailAddress)
-             );
+        await this.CheckUserExsist(request.Id);
+        await this.CheckEmailAddressExist(request.EmailAddress);
 
         var user = _mapper.Map<Domain.Models.User>(request);
         user.Password = PasswordEncryptor.Encrypt(user.Password);
 
-        var rows = await _userRepository.UpdateAsync(user);
-
-        return Messages.UserUpdated;
+        await _userRepository.UpdateAsync(user);
+        var updatedUser = _mapper.Map<UpdatedUserDto>(user);
+        return updatedUser;
     }
 
 

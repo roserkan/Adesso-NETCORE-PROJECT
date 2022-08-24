@@ -12,3 +12,6 @@ public class ProductDto: IDto
     public int CategoryId { get; set; }
     public DateTime CreatedDate { get; set; }
 }
+
+
+

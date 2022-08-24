@@ -1,10 +1,11 @@
-﻿using Adesso.Application.Utilities.Results;
+﻿using Adesso.Application.Dtos.UserDetail;
+using Adesso.Application.Utilities.Results;
 using Adesso.Domain.Enums;
 using MediatR;
 
 namespace Adesso.Application.Features.UserDetail.Commands.Update;
 
-public class UpdateUserDetailCommand : IRequest<string>
+public class UpdateUserDetailCommand : IRequest<UpdatedUserDetailDto>
 {
     public UpdateUserDetailCommand(int id, int userId, string firstName, string lastName, string address, Genders gender, DateTime createdTime)
     {

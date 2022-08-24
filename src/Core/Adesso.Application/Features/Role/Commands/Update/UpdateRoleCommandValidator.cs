@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Adesso.Application.Features.Role.Commands.Update;
 
-public class UpdateRoleCommandValidator : AbstractValidatorCustom<UpdateRoleCommand>
+public class UpdateRoleCommandValidator : AbstractValidator<UpdateRoleCommand>
 {
     public UpdateRoleCommandValidator()
     {

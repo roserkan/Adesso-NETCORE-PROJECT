@@ -1,8 +1,8 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
 using Adesso.Application.Dtos.MoneyPoint;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
-using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -29,9 +29,7 @@ public class GetMoneyPointByIdQuerieHandler : IRequestHandler<GetMoneyPointByIdQ
 
         var result = _mapper.Map<MoneyPointDto>(category);
 
-        if (result is null)
-            throw new DatabaseValidationException(Messages.MoneyPointNotFound);
-
+        if (result is null) throw new BusinessException(Messages.MoneyPointNotFound);
 
         return result;
     }

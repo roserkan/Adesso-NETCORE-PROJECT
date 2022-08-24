@@ -1,10 +1,11 @@
-﻿using Adesso.Application.Utilities.Results;
+﻿using Adesso.Application.Dtos.Product;
+using Adesso.Application.Utilities.Results;
 using MediatR;
 
 
 namespace Adesso.Application.Features.Product.Commands.Update;
 
-public class UpdateProductCommand : IRequest<string>
+public class UpdateProductCommand : IRequest<UpdatedProductDto>
 {
     public UpdateProductCommand(int id, string name, string imagePath, double price, int categoryId, int stock)
     {

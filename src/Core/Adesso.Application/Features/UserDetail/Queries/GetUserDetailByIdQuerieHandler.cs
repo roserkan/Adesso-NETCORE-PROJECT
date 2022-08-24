@@ -1,8 +1,8 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
 using Adesso.Application.Dtos.UserDetail;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
-using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -28,7 +28,7 @@ public class GetUserDetailByIdQuerieHandler : IRequestHandler<GetUserDetailByIdQ
         var result = _mapper.Map<UserDetailDto>(category);
 
         if (result is null)
-            throw new DatabaseValidationException(Messages.UserDetailNotFound);
+            throw new BusinessException(Messages.UserDetailNotFound);
 
         return result;
     }

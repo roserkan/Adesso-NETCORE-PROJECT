@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Adesso.Application.Features.User.Commands.Update;
 
-public class UpdateUserCommandValidator : AbstractValidatorCustom<UpdateUserCommand>
+public class UpdateUserCommandValidator : AbstractValidator<UpdateUserCommand>
 {
     public UpdateUserCommandValidator()
     {

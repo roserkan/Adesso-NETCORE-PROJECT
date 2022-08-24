@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using Adesso.Application.Dtos.Product;
+using MediatR;
 
 namespace Adesso.Application.Features.Product.Commands.Create;
 
-public class CreateProductCommand: IRequest<string>
+public class CreateProductCommand: IRequest<CreatedProductDto>
 {
     public CreateProductCommand(string name, string imagePath, double price, int categoryId, int stock)
     {

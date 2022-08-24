@@ -1,14 +1,9 @@
-﻿using Adesso.Application.Utilities.Results;
+﻿using Adesso.Application.Dtos.Category;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Adesso.Application.Features.Category.Commands.Update;
 
-public class UpdateCategoryCommand: IRequest<string>
+public class UpdateCategoryCommand: IRequest<UpdatedCategoryDto>
 {
     public UpdateCategoryCommand(int id, string name)
     {

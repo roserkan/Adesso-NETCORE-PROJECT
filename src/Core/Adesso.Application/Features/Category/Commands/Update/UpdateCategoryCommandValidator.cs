@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Adesso.Application.Features.Category.Commands.Update;
 
-public class UpdateCategoryCommandValidator : AbstractValidatorCustom<UpdateCategoryCommand>
+public class UpdateCategoryCommandValidator : AbstractValidator<UpdateCategoryCommand>
 {
     public UpdateCategoryCommandValidator()
     {

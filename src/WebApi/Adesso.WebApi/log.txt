@@ -1,0 +1,5 @@
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 11:58:06 AM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories/1","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 11:58:47 AM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories/111","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 11:58:52 AM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories/222","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:01:20 PM"}
+{"LogLevel":3,"Message":"Böyle bir kategori bulunmamaktadır.","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories/222","MethodType":"GET","StatusCode":"400","Date":"8/24/2022 12:01:23 PM"}

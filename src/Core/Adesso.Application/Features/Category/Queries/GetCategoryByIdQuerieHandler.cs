@@ -1,8 +1,7 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
 using Adesso.Application.Dtos.Category;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Results;
-using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -29,9 +28,9 @@ public class GetCategoryByIdQuerieHandler : IRequestHandler<GetCategoryByIdQueri
 
         var result = _mapper.Map<CategoryDto>(category);
 
-        if (result is null)
-            throw new DatabaseValidationException(Messages.CategoryIdNotFound);
+        if (result is null) throw new BusinessException(Messages.CategoryIdNotFound);
 
         return result;
+
     }
 }

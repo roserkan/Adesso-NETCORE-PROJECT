@@ -1,4 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.MoneyPoint;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
@@ -8,7 +10,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.MoneyPoint.Commands.Update;
 
-public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCommand, string>
+public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCommand, DeletedMoneyPointDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -25,50 +27,37 @@ public class UpdateMoneyPointCommandHandler : IRequestHandler<UpdateMoneyPointCo
 
     }
 
-    public async Task<string> Handle(UpdateMoneyPointCommand request, CancellationToken cancellationToken)
+    public async Task<DeletedMoneyPointDto> Handle(UpdateMoneyPointCommand request, CancellationToken cancellationToken)
     {
 
-        IResult result = BusinessRules.Run(
-                await CheckMoneyPointExist(request.Id),
-                await CheckCategoryExist(request.CategoryId)
-            );
+        await this.CheckMoneyPointExist(request.Id);
+        await this.CheckCategoryExist(request.CategoryId);
 
-        var product = _mapper.Map<Domain.Models.MoneyPoint>(request);
+        var moneyPoint = _mapper.Map<Domain.Models.MoneyPoint>(request);
 
-        var rows = await _moneyPointRepository.UpdateAsync(product);
-
-        return Messages.MoneyPointUpdated;
+        await _moneyPointRepository.UpdateAsync(moneyPoint);
+        var updatedMoneyPointDto = _mapper.Map<DeletedMoneyPointDto>(moneyPoint);
+        return updatedMoneyPointDto;
     }
 
 
-    private async Task<IResult> CheckMoneyPointExist(int id)
+    private async Task CheckMoneyPointExist(int id)
     {
         var moneyPoint = await _moneyPointRepository.GetByIdAsync(id);
-        if (moneyPoint is null)
-        {
-            return new ErrorResult(Messages.MoneyPointNotFound);
-        }
-        return new SuccessResult();
+        if (moneyPoint is null) throw new BusinessException(Messages.MoneyPointNotFound);
+
     }
 
-    private async Task<IResult> CheckCategoryExist(int categoryId)
+    private async Task CheckCategoryExist(int categoryId)
     {
         var category = await _categoryRepository.GetByIdAsync(categoryId);
         var moneyPoint = await _moneyPointRepository
             .GetSingleAsync(i => i.CategoryId == categoryId);
 
-        if (category is null)
-        {
-            return new ErrorResult(Messages.CategoryIdNotFound);
-        }
+        if (category is null) throw new BusinessException(Messages.CategoryIdNotFound);
 
-        if (moneyPoint is not null)
-        {
-            return new ErrorResult(Messages.MoneyPointCategoryIdAldreadyExist);
-        }
+        if (moneyPoint is not null) throw new BusinessException(Messages.MoneyPointCategoryIdAldreadyExist);
 
-
-        return new SuccessResult();
     }
 
 

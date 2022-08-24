@@ -1,6 +1,7 @@
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.CrossCuttingConcerns.Logging;
 using Adesso.Application.Extensions;
 using Adesso.Infrastructure.Persistence.Extensions;
-using FluentValidation.AspNetCore;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,8 +12,8 @@ builder.Services.AddControllers()
     .AddJsonOptions(opt =>
     {
         opt.JsonSerializerOptions.PropertyNamingPolicy = null;
-    })
-    .AddFluentValidation();
+    });
+    //.AddFluentValidation();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -41,10 +42,10 @@ if (app.Environment.IsDevelopment())
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.ErrorHandlerMiddleware();
+//app.ErrorHandlerMiddleware();
+app.ConfigureCustomExceptionMiddleware();
 app.UseAuthentication();
-app.UseAuthorization(); // 401
+app.UseAuthorization();
 app.MapControllers();
-
-
+app.ConfigureCustomLoggingMiddleware();
 app.Run();

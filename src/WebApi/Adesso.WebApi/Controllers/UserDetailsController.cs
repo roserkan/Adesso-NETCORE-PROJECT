@@ -1,4 +1,5 @@
-﻿using Adesso.Application.Dtos.UserDetail;
+﻿using Adesso.Application.Constants;
+using Adesso.Application.Dtos.UserDetail;
 using Adesso.Application.Features.UserDetail.Commands.Create;
 using Adesso.Application.Features.UserDetail.Commands.Delete;
 using Adesso.Application.Features.UserDetail.Commands.Update;
@@ -14,43 +15,39 @@ namespace Adesso.WebApi.Controllers;
 public class UserDetailsController : BaseController
 {
 
-    private readonly IMediator _mediator;
-
-    public UserDetailsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAllUserDetails()
+    public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllUserDetailsQuerie());
-        return Ok(new SuccessDataResult<List<UserDetailDto>>(result));
+        var data = await Mediator.Send(new GetAllUserDetailsQuerie());
+        var result = new SuccessDataResult<List<UserDetailDto>>(data);
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetUserDetailById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var result = await _mediator.Send(new GetUserDetailByIdQuerie(id));
-        return Ok(new SuccessDataResult<UserDetailDto>(result));
+        var data = await Mediator.Send(new GetUserDetailByIdQuerie(id));
+        var result = new SuccessDataResult<UserDetailDto>(data);
+        return Ok(result);
     }
 
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateUserDetail([FromBody] CreateUserDetailCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateUserDetailCommand command)
     {
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<CreateUserDetailCommand>(command, result));
+        await Mediator.Send(command); // return type: CreatedUserDetailDto
+        var result = new SuccessResult(Messages.UserDetailCreated);
+        return Created("", result);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateUserDetail(int id, [FromBody] UpdateUserDetailCommand command)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateUserDetailCommand command)
     {
         command.Id = id;
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<UpdateUserDetailCommand>(command, result));
-
+        await Mediator.Send(command); // return type: UpdatedUserDetailDto
+        var result = new SuccessResult(Messages.UserDetailUpdated);
+        return Ok(result);
     }
 
 
@@ -58,7 +55,8 @@ public class UserDetailsController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var command = new DeleteUserDetailCommand(id);
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<DeleteUserDetailCommand>(command, result));
+        await Mediator.Send(command); // return type: DeletedUserDetailDto
+        var result = new SuccessResult(Messages.UserDetailDeleted);
+        return Ok(result);
     }
 }

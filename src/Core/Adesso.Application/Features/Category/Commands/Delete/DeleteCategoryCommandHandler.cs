@@ -1,13 +1,13 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.Category;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Business;
-using Adesso.Application.Utilities.Results;
 using AutoMapper;
 using MediatR;
 
 namespace Adesso.Application.Features.Category.Commands.Delete;
 
-public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, string>
+public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryCommand, DeletedCategoryDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -21,26 +21,22 @@ public class DeleteCategoryCommandHandler : IRequestHandler<DeleteCategoryComman
         _categoryRepository = _unitOfWork.GetRepository<Domain.Models.Category>();
     }
 
-    public async Task<string> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
+    public async Task<DeletedCategoryDto> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
     {
-        IResult result = BusinessRules.Run(await CheckCategoryExsist(request.Id));
+        await this.CheckCategoryExsist(request.Id);
        
 
         var category = _mapper.Map<Domain.Models.Category>(request);
         category.IsDeleted = true;
-        var rows = await _categoryRepository.UpdateAsync(category);
-
-        return Messages.CategoryDeleted;
+        await _categoryRepository.UpdateAsync(category);
+        var deletedCategoryDto = _mapper.Map<DeletedCategoryDto>(category);
+        return deletedCategoryDto;
     }
 
-    private async Task<IResult> CheckCategoryExsist(int id)
+    private async Task CheckCategoryExsist(int id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
-        if (category is null)
-        {
-            return new ErrorResult(Messages.CategoryIdNotFound);
-        }
-        return new SuccessResult();
+        if (category is null) throw new BusinessException(Messages.CategoryIdNotFound);
     }
 
 }

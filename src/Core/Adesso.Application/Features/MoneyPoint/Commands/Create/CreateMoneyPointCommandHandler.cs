@@ -1,4 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.MoneyPoint;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
@@ -8,7 +10,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.MoneyPoint.Commands.Create;
 
-public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCommand, string>
+public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCommand, CreatedMoneyPointDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -25,40 +27,27 @@ public class CreateMoneyPointCommandHandler : IRequestHandler<CreateMoneyPointCo
 
     }
 
-    public async Task<string> Handle(CreateMoneyPointCommand request, CancellationToken cancellationToken)
+    public async Task<CreatedMoneyPointDto> Handle(CreateMoneyPointCommand request, CancellationToken cancellationToken)
     {
-        IResult result = BusinessRules.Run(
-                await CheckCategoryExist(request.CategoryId)
+        await this.CheckCategoryExist(request.CategoryId);
 
-            );
 
         var moneyPoint = _mapper.Map<Domain.Models.MoneyPoint>(request);
-
-        var rows = await _moneyPointRepository.AddAsync(moneyPoint);
-
-        return Messages.MoneyPointCreated;
+        await _moneyPointRepository.AddAsync(moneyPoint);
+        var createdMoneyPointDto = _mapper.Map<CreatedMoneyPointDto>(moneyPoint);
+        return createdMoneyPointDto;
     }
 
 
-    private async Task<IResult> CheckCategoryExist(int categoryId)
+    private async Task CheckCategoryExist(int categoryId)
     {
         var category = await _categoryRepository.GetByIdAsync(categoryId);
         var moneyPoint = await _moneyPointRepository
             .GetSingleAsync(i => i.CategoryId == categoryId);
 
-        if (category is null)
-        {
-            return new ErrorResult(Messages.CategoryIdNotFound);
-        }
+        if (category is null) throw new BusinessException(Messages.CategoryIdNotFound);
 
-        if (moneyPoint is not null)
-        {
-            return new ErrorResult(Messages.MoneyPointCategoryIdAldreadyExist);
-
-        }
-
-
-        return new SuccessResult();
+        if (moneyPoint is not null) throw new BusinessException(Messages.MoneyPointCategoryIdAldreadyExist);
     }
 
    

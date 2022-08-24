@@ -1,4 +1,5 @@
-﻿using Adesso.Application.Dtos.Order;
+﻿using Adesso.Application.Constants;
+using Adesso.Application.Dtos.Order;
 using Adesso.Application.Features.Order.Commands.Create;
 using Adesso.Application.Features.Order.Queries;
 using Adesso.Application.Utilities.Results;
@@ -12,51 +13,30 @@ namespace Adesso.WebApi.Controllers;
 public class OrdersController : BaseController
 {
 
-    private readonly IMediator _mediator;
-
-    public OrdersController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAllOrders()
+    public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllOrdersQuerie());
-        return Ok(new SuccessDataResult<List<OrderDto>>(result));
+        var data = await Mediator.Send(new GetAllOrdersQuerie());
+        var result = new SuccessDataResult<List<OrderDto>>(data);
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetOrderById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var result = await _mediator.Send(new GetOrderByIdQuerie(id));
-        return Ok(new SuccessDataResult<OrderDto>(result));
+        var data = await Mediator.Send(new GetOrderByIdQuerie(id));
+        var result = new SuccessDataResult<OrderDto>(data);
+        return Ok(result);
     }
 
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateOrderCommand command)
     {
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<CreateOrderCommand>(command, result));
+        await Mediator.Send(command); // return type: CreatedOrderDto
+        var result = new SuccessResult(Messages.OrderSuccess);
+        return Created("", result);
     }
 
-    //[HttpPut("{id:int}")]
-    //public async Task<IActionResult> UpdateOrder(int id, [FromBody] UpdateOrderCommand command)
-    //{
-    //    command.Id = id;
-    //    var result = await _mediator.Send(command);
-    //    return Ok(new SuccessDataResult<UpdateOrderCommand>(command, result));
-
-    //}
-
-
-    //[HttpDelete("{id:int}")]
-    //public async Task<IActionResult> Delete(int id)
-    //{
-    //    var command = new DeleteOrderCommand(id);
-    //    var result = await _mediator.Send(command);
-    //    return Ok(new SuccessDataResult<DeleteOrderCommand>(command, result));
-    //}
 }

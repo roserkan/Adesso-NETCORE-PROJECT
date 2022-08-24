@@ -1,4 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.Role;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
@@ -8,7 +10,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Role.Commands.Create;
 
-public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, string>
+public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, CreatedRoleDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,34 +25,25 @@ public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, strin
 
     }
 
-    public async Task<string> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
+    public async Task<CreatedRoleDto> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
     {
-        IResult result = BusinessRules.Run(
-                await CheckRoleNameExist(request.RoleName)
+        await this.CheckRoleNameExist(request.RoleName);
 
-            );
       
 
-        var moneyPoint = _mapper.Map<Domain.Models.Role>(request);
-
-        var rows = await _roleRepository.AddAsync(moneyPoint);
-
-        return Messages.RoleCreated;
+        var role = _mapper.Map<Domain.Models.Role>(request);
+        await _roleRepository.AddAsync(role);
+        var createdRole = _mapper.Map<CreatedRoleDto>(role);
+        return createdRole;
     }
 
 
-    private async Task<IResult> CheckRoleNameExist(string roleName)
+    private async Task CheckRoleNameExist(string roleName)
     {
         var role = await _roleRepository
             .GetSingleAsync(r => r.RoleName == roleName);
 
-        if (role is not null)
-        {
-            return new ErrorResult(Messages.RoleNameAlreadyExist);
-        }
-
-
-        return new SuccessResult();
+        if (role is not null) throw new BusinessException(Messages.RoleNameAlreadyExist);
     }
 
    

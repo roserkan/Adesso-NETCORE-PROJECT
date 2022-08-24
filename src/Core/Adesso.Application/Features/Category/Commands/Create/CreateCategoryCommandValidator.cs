@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Adesso.Application.Features.Category.Commands.Create;
 
-public class CreateCategoryCommandValidator : AbstractValidatorCustom<CreateCategoryCommand>
+public class CreateCategoryCommandValidator : AbstractValidator<CreateCategoryCommand>
 {
     public CreateCategoryCommandValidator()
     {

@@ -1,4 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.User;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
@@ -8,7 +10,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.User.Commands.Delete;
 
-public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, string>
+public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, DeletedUserDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -22,25 +24,22 @@ public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, strin
 
     }
 
-    public async Task<string> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task<DeletedUserDto> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
-        IResult result = BusinessRules.Run(await CheckUserExist(request.Id));
+        await this.CheckUserExist(request.Id);
 
-        var category = _mapper.Map<Domain.Models.User>(request);
+        var user = _mapper.Map<Domain.Models.User>(request);
 
-        var rows = await _userRepository.DeleteAsync(category);
-
-        return Messages.UserDeleted;
+        await _userRepository.DeleteAsync(user);
+        var deletedUser = _mapper.Map<DeletedUserDto>(user);
+        return deletedUser;
     }
 
-    private async Task<IResult> CheckUserExist(int id)
+    private async Task CheckUserExist(int id)
     {
         var user = await _userRepository.GetByIdAsync(id);
-        if (user is null)
-        {
-            return new ErrorResult(Messages.UserNotFound);
-        }
-        return new SuccessResult();
+        if (user is null) throw new BusinessException(Messages.UserNotFound);
+
     }
 
 

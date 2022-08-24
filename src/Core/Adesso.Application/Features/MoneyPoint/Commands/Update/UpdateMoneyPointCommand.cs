@@ -1,10 +1,11 @@
-﻿using Adesso.Application.Utilities.Results;
+﻿using Adesso.Application.Dtos.MoneyPoint;
+using Adesso.Application.Utilities.Results;
 using MediatR;
 
 
 namespace Adesso.Application.Features.MoneyPoint.Commands.Update;
 
-public class UpdateMoneyPointCommand: IRequest<string>
+public class UpdateMoneyPointCommand: IRequest<DeletedMoneyPointDto>
 {
     public UpdateMoneyPointCommand(int id, int point, int categoryId)
     {

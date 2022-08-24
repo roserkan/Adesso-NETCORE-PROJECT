@@ -1,10 +1,11 @@
-﻿using Adesso.Application.Utilities.Results;
+﻿using Adesso.Application.Dtos.Product;
+using Adesso.Application.Utilities.Results;
 using MediatR;
 
 
 namespace Adesso.Application.Features.Product.Commands.Delete;
 
-public class DeleteProductCommand : IRequest<string>
+public class DeleteProductCommand : IRequest<DeletedProductDto>
 {
     public DeleteProductCommand(int id)
     {

@@ -1,8 +1,8 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
 using Adesso.Application.Dtos.Order;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
-using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -29,7 +29,7 @@ public class GetOrderByIdQuerieHandler : IRequestHandler<GetOrderByIdQuerie, Ord
         var result = _mapper.Map<OrderDto>(category);
 
         if (result is null)
-            throw new DatabaseValidationException(Messages.OrderNotFound);
+            throw new BusinessException(Messages.OrderNotFound);
 
         return result;
     }

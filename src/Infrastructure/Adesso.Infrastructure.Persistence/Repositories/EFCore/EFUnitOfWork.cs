@@ -27,13 +27,13 @@ public class EFUnitOfWork : IUnitOfWork
         return new EFGenericRepository<T>(_dbContext);
     }
 
-    public int SaveChanges()
+    public async Task<int> SaveChangesAsync()
     {
         try
         {
             // Transaction işlemleri burada ele alınabilir veya Identity Map kurumsal tasarım kalıbı kullanılarak
             // sadece değişen alanları güncellemeyide sağlayabiliriz.
-            return _dbContext.SaveChanges();
+            return await _dbContext.SaveChangesAsync();
         }
         catch
         {

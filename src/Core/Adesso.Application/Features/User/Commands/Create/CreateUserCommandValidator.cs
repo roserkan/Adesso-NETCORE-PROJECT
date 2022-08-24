@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Adesso.Application.Features.User.Commands.Create;
 
-public class CreateUserCommandValidator : AbstractValidatorCustom<CreateUserCommand>
+public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
 {
     public CreateUserCommandValidator()
     {

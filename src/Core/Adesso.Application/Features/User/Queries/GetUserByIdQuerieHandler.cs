@@ -1,8 +1,8 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
 using Adesso.Application.Dtos.User;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Results;
-using Adesso.Domain.Exceptions;
 using AutoMapper;
 using MediatR;
 
@@ -24,12 +24,12 @@ public class GetUserByIdQuerieHandler : IRequestHandler<GetUserByIdQuerie, UserD
 
     public async Task<UserDto> Handle(GetUserByIdQuerie request, CancellationToken cancellationToken)
     {
-        var category = await _userRepository.GetByIdAsync(request.Id);
+        var user = await _userRepository.GetByIdAsync(request.Id);
 
-        var result = _mapper.Map<UserDto>(category);
+        var result = _mapper.Map<UserDto>(user);
 
         if (result is null)
-            throw new DatabaseValidationException(Messages.UserNotFound);
+            throw new BusinessException(Messages.UserNotFound);
 
         return result;
     }

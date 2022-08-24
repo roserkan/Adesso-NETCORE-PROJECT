@@ -1,10 +1,10 @@
-﻿using Adesso.Application.Dtos.Product;
+﻿using Adesso.Application.Constants;
+using Adesso.Application.Dtos.Product;
 using Adesso.Application.Features.Product.Commands.Create;
 using Adesso.Application.Features.Product.Commands.Delete;
 using Adesso.Application.Features.Product.Commands.Update;
 using Adesso.Application.Features.Product.Queries;
 using Adesso.Application.Utilities.Results;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Adesso.WebApi.Controllers;
@@ -14,43 +14,39 @@ namespace Adesso.WebApi.Controllers;
 public class ProductsController : BaseController
 {
 
-    private readonly IMediator _mediator;
-
-    public ProductsController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAllProducts()
+    public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllProductsQuerie());
-        return Ok(new SuccessDataResult<List<ProductDto>>(result));
+        var data = await Mediator.Send(new GetAllProductsQuerie());
+        var result = new SuccessDataResult<List<ProductDto>>(data);
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetProductById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var result = await _mediator.Send(new GetProductByIdQuerie(id));
-        return Ok(new SuccessDataResult<ProductDto>(result));
+        var data = await Mediator.Send(new GetProductByIdQuerie(id));
+        var result = new SuccessDataResult<ProductDto>(data);
+        return Ok(result);
     }
 
 
 
     [HttpPost]
-    public  async Task<IActionResult> CreateProduct([FromBody] CreateProductCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateProductCommand command)
     {
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<CreateProductCommand>(command, result));
+        await Mediator.Send(command); // return type: CreatedProductDto
+        var result = new SuccessResult(Messages.ProductCreated);
+        return Created("", result);
     }
-        
+
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductCommand command)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateProductCommand command)
     {
         command.Id = id;
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<UpdateProductCommand>(command, result));
-
+        await Mediator.Send(command); // return type: UpdatedProductDto
+        var result = new SuccessResult(Messages.ProductUpdated);
+        return Ok(result);
     }
 
 
@@ -58,7 +54,8 @@ public class ProductsController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var command = new DeleteProductCommand(id);
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<DeleteProductCommand>(command, result));
+        await Mediator.Send(command); // return type: DeletedProductDto
+        var result = new SuccessResult(Messages.ProductDeleted);
+        return Ok(result);
     }
 }

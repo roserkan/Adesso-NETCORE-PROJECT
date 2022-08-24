@@ -14,4 +14,3 @@ public class UserDetailDto : IDto
     public Genders Gender { get; set; }
     public DateTime CreatedTime { get; set; }
 }
-

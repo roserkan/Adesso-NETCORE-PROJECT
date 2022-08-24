@@ -1,4 +1,5 @@
-﻿using Adesso.Application.Utilities.Results;
+﻿using Adesso.Application.Dtos.User;
+using Adesso.Application.Utilities.Results;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Adesso.Application.Features.User.Commands.Update;
 
-public class UpdateUserCommand : IRequest<string>
+public class UpdateUserCommand : IRequest<UpdatedUserDto>
 {
     public UpdateUserCommand(int id, string emailAddress, string password)
     {

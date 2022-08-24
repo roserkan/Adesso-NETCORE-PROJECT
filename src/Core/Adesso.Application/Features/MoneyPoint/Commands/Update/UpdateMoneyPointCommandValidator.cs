@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace Adesso.Application.Features.MoneyPoint.Commands.Update;
 
-public class UpdateMoneyPointCommandValidator : AbstractValidatorCustom<UpdateMoneyPointCommand>
+public class UpdateMoneyPointCommandValidator : AbstractValidator<UpdateMoneyPointCommand>
 {
     public UpdateMoneyPointCommandValidator()
     {

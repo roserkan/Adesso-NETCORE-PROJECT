@@ -1,10 +1,10 @@
-﻿using Adesso.Application.Dtos.Role;
+﻿using Adesso.Application.Constants;
+using Adesso.Application.Dtos.Role;
 using Adesso.Application.Features.Role.Commands.Create;
 using Adesso.Application.Features.Role.Commands.Delete;
 using Adesso.Application.Features.Role.Commands.Update;
 using Adesso.Application.Features.Role.Queries;
 using Adesso.Application.Utilities.Results;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Adesso.WebApi.Controllers;
@@ -14,43 +14,39 @@ namespace Adesso.WebApi.Controllers;
 public class RolesController : BaseController
 {
 
-    private readonly IMediator _mediator;
-
-    public RolesController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAllRoles()
+    public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllRolesQuerie());
-        return Ok(new SuccessDataResult<List<RoleDto>>(result));
+        var data = await Mediator.Send(new GetAllRolesQuerie());
+        var result = new SuccessDataResult<List<RoleDto>>(data);
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetRoleById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var result = await _mediator.Send(new GetRoleByIdQuerie(id));
-        return Ok(new SuccessDataResult<RoleDto>(result));
+        var data = await Mediator.Send(new GetRoleByIdQuerie(id));
+        var result = new SuccessDataResult<RoleDto>(data);
+        return Ok(result);
     }
 
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateRole([FromBody] CreateRoleCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateRoleCommand command)
     {
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<CreateRoleCommand>(command, result));
+        await Mediator.Send(command); // return type: CreatedRoleDto
+        var result = new SuccessResult(Messages.RoleCreated);
+        return Created("", result);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateRole(int id, [FromBody] UpdateRoleCommand command)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateRoleCommand command)
     {
         command.Id = id;
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<UpdateRoleCommand>(command, result));
-
+        await Mediator.Send(command); // return type: UpdatedRoleDto
+        var result = new SuccessResult(Messages.RoleUpdated);
+        return Ok(result);
     }
 
 
@@ -58,7 +54,8 @@ public class RolesController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var command = new DeleteRoleCommand(id);
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<DeleteRoleCommand>(command, result));
+        await Mediator.Send(command); // return type: DeletedRoleDto
+        var result = new SuccessResult(Messages.RoleDeleted);
+        return Ok(result);
     }
 }

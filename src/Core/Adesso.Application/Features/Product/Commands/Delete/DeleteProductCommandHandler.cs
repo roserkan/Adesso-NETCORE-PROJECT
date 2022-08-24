@@ -1,4 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.Product;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
@@ -7,7 +9,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Product.Commands.Delete;
 
-public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, string>
+public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, DeletedProductDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -22,27 +24,24 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
 
     }
 
-    public async Task<string> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+    public async Task<DeletedProductDto> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
 
-        IResult result = BusinessRules.Run(await CheckProductExsist(request.Id));
+        await this.CheckProductExsist(request.Id);
    
 
         var product = _mapper.Map<Domain.Models.Product>(request);
 
-        var rows = await _productRepository.DeleteAsync(product);
-
-        return Messages.ProductDeleted;
+        await _productRepository.DeleteAsync(product);
+        var deletedProductDto = _mapper.Map<DeletedProductDto>(product);
+        return deletedProductDto;
     }
 
-    private async Task<IResult> CheckProductExsist(int id)
+    private async Task CheckProductExsist(int id)
     {
         var product = await _productRepository.GetByIdAsync(id);
-        if (product is null)
-        {
-            return new ErrorResult(Messages.ProductIdNotFound);
-        }
-        return new SuccessResult();
+        if (product is null)  throw new BusinessException(Messages.ProductIdNotFound);
+
     }
 }
 

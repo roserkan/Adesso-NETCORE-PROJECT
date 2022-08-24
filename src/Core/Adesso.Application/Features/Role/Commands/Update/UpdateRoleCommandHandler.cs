@@ -1,4 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.Role;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
@@ -8,7 +10,7 @@ using MediatR;
 
 namespace Adesso.Application.Features.Role.Commands.Update;
 
-public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, string>
+public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, UpdatedRoleDto>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,47 +25,35 @@ public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, strin
 
     }
 
-    public async Task<string> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
+    public async Task<UpdatedRoleDto> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
     {
 
-        IResult result = BusinessRules.Run(
-                await CheckRoleExist(request.Id),
-                await CheckRoleNameExist(request.RoleName)
-            );
+        await this.CheckRoleExist(request.Id);
+        await this.CheckRoleNameExist(request.RoleName);
 
-        var product = _mapper.Map<Domain.Models.Role>(request);
+        var role = _mapper.Map<Domain.Models.Role>(request);
 
-        var rows = await _roleRepository.UpdateAsync(product);
-
-        return Messages.RoleUpdated;
+        await _roleRepository.UpdateAsync(role);
+        var updatedRole = _mapper.Map<UpdatedRoleDto>(role);
+        return updatedRole;
     }
 
 
    
 
 
-    private async Task<IResult> CheckRoleNameExist(string roleName)
+    private async Task CheckRoleNameExist(string roleName)
     {
         var role = await _roleRepository
             .GetSingleAsync(r => r.RoleName == roleName);
 
-        if (role is not null)
-        {
-            return new ErrorResult(Messages.RoleNameAlreadyExist);
-        }
-
-
-        return new SuccessResult();
+        if (role is not null) throw new BusinessException(Messages.RoleNameAlreadyExist);
     }
 
-    private async Task<IResult> CheckRoleExist(int id)
+    private async Task CheckRoleExist(int id)
     {
         var role = await _roleRepository.GetByIdAsync(id);
-        if (role is null)
-        {
-            return new ErrorResult(Messages.RoleNotFound);
-        }
-        return new SuccessResult();
+        if (role is null) throw new BusinessException(Messages.RoleNotFound);
     }
 
 

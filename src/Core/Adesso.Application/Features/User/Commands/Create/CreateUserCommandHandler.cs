@@ -1,4 +1,6 @@
 ﻿using Adesso.Application.Constants;
+using Adesso.Application.CrossCuttingConcerns.Exceptions;
+using Adesso.Application.Dtos.User;
 using Adesso.Application.Interfaces.Repositories;
 using Adesso.Application.Utilities.Business;
 using Adesso.Application.Utilities.Results;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Adesso.Application.Features.User.Commands.Create;
 
-public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, string>
+public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, CreatedUserDto>
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
@@ -27,25 +29,22 @@ public class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, strin
         _userRepository = _unitOfWork.GetRepository<Domain.Models.User>();
     }
 
-    public async Task<string> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+    public async Task<CreatedUserDto> Handle(CreateUserCommand request, CancellationToken cancellationToken)
     {
-        IResult result = BusinessRules.Run(await CheckEmailAddressExist(request.EmailAddress));
+        await this.CheckEmailAddressExist(request.EmailAddress);
 
         var user = _mapper.Map<Domain.Models.User>(request);
         user.Password = PasswordEncryptor.Encrypt(user.Password);
-        var rows = await _userRepository.AddAsync(user);
-
-        return Messages.UserCreated;
+        await _userRepository.AddAsync(user);
+        var createdUser = _mapper.Map<CreatedUserDto>(user);
+        return createdUser;
     }
 
-    private async Task<IResult> CheckEmailAddressExist(string emailAddress)
+    private async Task CheckEmailAddressExist(string emailAddress)
     {
         var user = await _userRepository.GetSingleAsync(u => u.EmailAddress == emailAddress);
-        if (user is not null)
-        {
-            return new ErrorResult(Messages.UserEmailAddressNotAvailable);
-        }
-        return new SuccessResult();
+        if (user is not null) throw new BusinessException(Messages.UserEmailAddressNotAvailable);
+
     }
 
 

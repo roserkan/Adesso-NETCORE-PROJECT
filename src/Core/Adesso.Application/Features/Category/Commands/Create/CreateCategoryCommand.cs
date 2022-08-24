@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using Adesso.Application.Dtos.Category;
+using MediatR;
 
 
 namespace Adesso.Application.Features.Category.Commands.Create;
 
-public class CreateCategoryCommand : IRequest<string>
+public class CreateCategoryCommand : IRequest<CreatedCategoryDto>
 {
     public string Name { get; set; }
 

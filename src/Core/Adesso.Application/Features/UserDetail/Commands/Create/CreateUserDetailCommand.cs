@@ -1,10 +1,11 @@
-﻿using Adesso.Application.Utilities.Results;
+﻿using Adesso.Application.Dtos.UserDetail;
+using Adesso.Application.Utilities.Results;
 using Adesso.Domain.Enums;
 using MediatR;
 
 namespace Adesso.Application.Features.UserDetail.Commands.Create;
 
-public class CreateUserDetailCommand: IRequest<string>
+public class CreateUserDetailCommand: IRequest<CreatedUserDetailDto>
 {
     public CreateUserDetailCommand(int id, int userId, string firstName, string lastName, string address, Genders gender, DateTime createdTime)
     {

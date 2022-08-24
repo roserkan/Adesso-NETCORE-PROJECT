@@ -1,4 +1,5 @@
-﻿using Adesso.Application.Dtos.User;
+﻿using Adesso.Application.Constants;
+using Adesso.Application.Dtos.User;
 using Adesso.Application.Features.User.Commands.Create;
 using Adesso.Application.Features.User.Commands.Delete;
 using Adesso.Application.Features.User.Commands.Login;
@@ -15,43 +16,39 @@ namespace Adesso.WebApi.Controllers;
 public class UsersController : BaseController
 {
 
-    private readonly IMediator _mediator;
-
-    public UsersController(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> GetAllUsers()
+    public async Task<IActionResult> GetAll()
     {
-        var result = await _mediator.Send(new GetAllUsersQuerie());
-        return Ok(new SuccessDataResult<List<UserDto>>(result));
+        var data = await Mediator.Send(new GetAllUsersQuerie());
+        var result = new SuccessDataResult<List<UserDto>>(data);
+        return Ok(result);
     }
 
     [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetUserById(int id)
+    public async Task<IActionResult> GetById(int id)
     {
-        var result = await _mediator.Send(new GetUserByIdQuerie(id));
-        return Ok(new SuccessDataResult<UserDto>(result));
+        var data = await Mediator.Send(new GetUserByIdQuerie(id));
+        var result = new SuccessDataResult<UserDto>(data);
+        return Ok(result);
     }
 
 
 
     [HttpPost]
-    public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
+    public async Task<IActionResult> Create([FromBody] CreateUserCommand command)
     {
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<CreateUserCommand>(command, result));
+        await Mediator.Send(command); // return type: CreatedUserDto
+        var result = new SuccessResult(Messages.UserCreated);
+        return Created("", result);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserCommand command)
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateUserCommand command)
     {
         command.Id = id;
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<UpdateUserCommand>(command, result));
-
+        await Mediator.Send(command); // return type: UpdatedUserDto
+        var result = new SuccessResult(Messages.UserUpdated);
+        return Ok(result);
     }
 
 
@@ -59,15 +56,16 @@ public class UsersController : BaseController
     public async Task<IActionResult> Delete(int id)
     {
         var command = new DeleteUserCommand(id);
-        var result = await _mediator.Send(command);
-        return Ok(new SuccessDataResult<DeleteUserCommand>(command, result));
+        await Mediator.Send(command); // return type: DeletedUserDto
+        var result = new SuccessResult(Messages.UserDeleted);
+        return Ok(result);
     }
 
     [HttpPost]
     [Route("Login")]
     public async Task<IActionResult> Login([FromBody] LoginUserCommand command)
     {
-        var result = await _mediator.Send(command);
+        var result = await Mediator.Send(command);
         return Ok(new SuccessDataResult<LoginUserDto>(result));
     }
 }
