@@ -1,5 +1,4 @@
 ﻿using Adesso.Application.Constants;
-using Adesso.Application.Helpers.Validation;
 using FluentValidation;
 
 namespace Adesso.Application.Features.UserDetail.Commands.Create;

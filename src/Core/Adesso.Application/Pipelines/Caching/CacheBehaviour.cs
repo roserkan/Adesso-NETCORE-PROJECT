@@ -1,9 +1,8 @@
 ﻿using Adesso.Application.CrossCuttingConcerns.Caching;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using System.Text;
 
-namespace Adesso.Application.Helpers.MediatrPiplines;
+namespace Adesso.Application.Pipelines.Caching;
 
 public class CacheBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
@@ -27,10 +26,13 @@ public class CacheBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, T
         {
             requestHeaders.Add(header.Key, header.Value);
         }
-        var token = requestHeaders["Authentication"];
+        string token = null;
+        if (requestHeaders.ContainsKey("Authentication"))
+            token = token = requestHeaders["Authentication"];
 
-        string cacheKey = $"{methodType}-{endpoint}-{token}";
-        //string type = cacheKey.Split(".")[3]; 
+        string cacheKey = token is null ? $"{methodType}-{endpoint}" : $"{methodType}-{endpoint}-{token}";
+
+
         bool isQuerie = cacheKey.Contains("GET");
 
 
@@ -48,7 +50,7 @@ public class CacheBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, T
             return data;
         }
 
-        _cacheManager.RemoveByPattern(methodType);
+        _cacheManager.RemoveByPattern("GET");
         var response = await next();
         return response;
     }

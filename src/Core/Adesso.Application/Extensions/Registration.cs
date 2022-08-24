@@ -1,6 +1,7 @@
 ﻿using Adesso.Application.CrossCuttingConcerns.Caching;
 using Adesso.Application.CrossCuttingConcerns.Caching.Microsoft;
-using Adesso.Application.Helpers.MediatrPiplines;
+using Adesso.Application.Pipelines.Caching;
+using Adesso.Application.Pipelines.SaveChanges;
 using Adesso.Application.Pipelines.Validation;
 using FluentValidation;
 using MediatR;
@@ -25,7 +26,7 @@ public static class Registration
 
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(SaveChangesBehaviour<,>));
-        //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehaviour<,>));
+        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(CacheBehaviour<,>));
 
 
         return services;

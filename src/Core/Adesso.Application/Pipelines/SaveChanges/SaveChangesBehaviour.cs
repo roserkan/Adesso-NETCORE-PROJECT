@@ -1,8 +1,7 @@
 ﻿using Adesso.Application.Interfaces.Repositories;
-using FluentValidation;
 using MediatR;
 
-namespace Adesso.Application.Helpers.MediatrPiplines;
+namespace Adesso.Application.Pipelines.SaveChanges;
 
 public class SaveChangesBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {

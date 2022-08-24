@@ -2,8 +2,6 @@
 using Adesso.Application.CrossCuttingConcerns.Exceptions;
 using Adesso.Application.Dtos.Category;
 using Adesso.Application.Interfaces.Repositories;
-using Adesso.Application.Utilities.Business;
-using Adesso.Application.Utilities.Results;
 using AutoMapper;
 using MediatR;
 

@@ -3,3 +3,34 @@
 {"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories/111","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 11:58:52 AM"}
 {"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories/222","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:01:20 PM"}
 {"LogLevel":3,"Message":"Böyle bir kategori bulunmamaktadır.","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories/222","MethodType":"GET","StatusCode":"400","Date":"8/24/2022 12:01:23 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:10:46 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:12:12 PM"}
+{"LogLevel":3,"Message":"The given key 'Authentication' was not present in the dictionary.","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"400","Date":"8/24/2022 12:12:52 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:13:31 PM"}
+{"LogLevel":3,"Message":"The given key 'Authentication' was not present in the dictionary.","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"400","Date":"8/24/2022 12:13:32 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:14:55 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:19:40 PM"}
+{"LogLevel":3,"Message":"The given key 'Authentication' was not present in the dictionary.","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"400","Date":"8/24/2022 12:19:41 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"POST","StatusCode":"200","Date":"8/24/2022 12:20:01 PM"}
+{"LogLevel":3,"Message":"The given key 'Authentication' was not present in the dictionary.","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"POST","StatusCode":"400","Date":"8/24/2022 12:20:01 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:20:31 PM"}
+{"LogLevel":3,"Message":"The given key 'Authentication' was not present in the dictionary.","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"400","Date":"8/24/2022 12:20:32 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:21:37 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:23:25 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:23:47 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:23:49 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"POST","StatusCode":"200","Date":"8/24/2022 12:23:58 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:24:05 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:24:14 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:24:45 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"POST","StatusCode":"200","Date":"8/24/2022 12:25:06 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:25:37 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:27:47 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:28:48 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"POST","StatusCode":"200","Date":"8/24/2022 12:28:58 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:29:04 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:33:41 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"POST","StatusCode":"200","Date":"8/24/2022 12:33:52 PM"}
+{"LogLevel":3,"Message":"Validation failed: \r\n -- Name: Kategori adı en az 2 karakter uzunluğunda olmalı! Severity: Error","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"POST","StatusCode":"400","Date":"8/24/2022 12:33:52 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"POST","StatusCode":"200","Date":"8/24/2022 12:33:57 PM"}
+{"LogLevel":6,"Message":"Başarılı işlem","UserId":null,"UserEmailAddress":null,"Path":"/api/Categories","MethodType":"GET","StatusCode":"200","Date":"8/24/2022 12:34:01 PM"}
