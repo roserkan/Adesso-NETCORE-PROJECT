@@ -33,6 +33,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
 
         var product = _mapper.Map<Domain.Models.Product>(request);
         await _productRepository.AddAsync(product);
+        await _unitOfWork.SaveChangesAsync();
         var createdProductDto = _mapper.Map<CreatedProductDto>(product);
         return createdProductDto;
     }

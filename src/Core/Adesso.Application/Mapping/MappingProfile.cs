@@ -83,8 +83,10 @@ public class MappingProfile : Profile
 
         //Orders
         CreateMap<Order, OrderDto>().ReverseMap();
-        CreateMap<Order, CreateOrderItemDto>().ReverseMap();
         CreateMap<Order, CreateOrderCommand>().ReverseMap();
+
+
+        CreateMap<Order, CreateOrderItemDto>().ReverseMap();
         CreateMap<OrderItem, OrderItemDto>().ReverseMap();
 
 

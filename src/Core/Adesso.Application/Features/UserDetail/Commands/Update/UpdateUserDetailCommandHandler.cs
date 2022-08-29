@@ -33,7 +33,7 @@ public class UpdateUserDetailCommandHandler : IRequestHandler<UpdateUserDetailCo
         var userDetail = _mapper.Map<Domain.Models.UserDetail>(request);
 
         await _userDetailRepository.UpdateAsync(userDetail);
-        var updatedUserDetailDto = _mapper.Map<UpdatedUserDetailDto>(request);
+        var updatedUserDetailDto = _mapper.Map<UpdatedUserDetailDto>(userDetail);
         return updatedUserDetailDto;
     }
 

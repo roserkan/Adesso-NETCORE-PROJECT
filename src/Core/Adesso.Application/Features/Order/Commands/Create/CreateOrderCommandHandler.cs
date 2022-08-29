@@ -39,16 +39,21 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
 
         var orderId = await _orderRepository.AddAsync(order);
         await _unitOfWork.SaveChangesAsync();
-
-        var orderItems = GetOrderItems(orderId, request.CreateOrderItemDtos);
+        var orderItems = GetOrderItems(order.Id, request.CreateOrderItemDtos);
        
         await _orderItemRepository.BulkAdd(orderItems);
 
         // İşlemler başarılı ise Siparişin total fiyatı ve ürünün stok adedi güncellenmelidir.
-        await this.UpdateOrderTotal(request.CreateOrderItemDtos);
+        await this.UpdateOrderTotal(request.CreateOrderItemDtos, order.Id);
         await this.UpdateProductStock(request.CreateOrderItemDtos);
 
-        var createdOrderDto = _mapper.Map<CreatedOrderDto>(order);
+        var createdOrderDto = new CreatedOrderDto
+        {
+            Id = order.Id,
+            UserId = order.UserId,
+            Total = order.Total
+        };
+        //var createdOrderDto = _mapper.Map<CreatedOrderDto>(order);
         return createdOrderDto;
     }
 
@@ -82,7 +87,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
         return orderItems;
     }
 
-    private async Task UpdateOrderTotal(List<CreateOrderItemDto> orderItems)
+    private async Task UpdateOrderTotal(List<CreateOrderItemDto> orderItems, int orderId)
     {
         decimal total = 0;
         foreach (var orderItem in orderItems)
@@ -93,7 +98,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Cre
             total += price * quantity;
         }
 
-        var order = await _orderRepository.GetByIdAsync(orderItems[0].OrderId);
+        var order = await _orderRepository.GetByIdAsync(orderId);
         order.Total = total;
         await _unitOfWork.GetRepository<Domain.Models.Order>().UpdateAsync(order);
         await _unitOfWork.SaveChangesAsync();

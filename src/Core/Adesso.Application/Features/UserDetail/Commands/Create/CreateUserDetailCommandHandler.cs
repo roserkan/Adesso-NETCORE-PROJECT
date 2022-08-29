@@ -32,7 +32,7 @@ public class CreateUserDetailCommandHandler : IRequestHandler<CreateUserDetailCo
       
         var userDetail = _mapper.Map<Domain.Models.UserDetail>(request);
         await _userDetailRepository.AddAsync(userDetail);
-        var createdUserDetailDto = _mapper.Map<CreatedUserDetailDto>(request);
+        var createdUserDetailDto = _mapper.Map<CreatedUserDetailDto>(userDetail);
         return createdUserDetailDto;
     }
 

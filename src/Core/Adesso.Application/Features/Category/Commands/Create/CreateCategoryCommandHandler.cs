@@ -30,9 +30,9 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
 
         var category = _mapper.Map<Domain.Models.Category>(request);
         await _categoryRepository.AddAsync(category);
-        var createdBrandDto = _mapper.Map<CreatedCategoryDto>(category);
+        var createdCategoryDto = _mapper.Map<CreatedCategoryDto>(category);
         //await _unitOfWork.SaveChangesAsync(); // for init ID
-        return createdBrandDto;
+        return createdCategoryDto;
             
 
     }

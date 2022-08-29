@@ -23,13 +23,6 @@ builder.Services.AddApplicationRegistration();
 builder.Services.AddInfrastructureRegistration(builder.Configuration);
 builder.Services.ConfigureAuth(builder.Configuration);
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AllowedAdmin", policy =>
-        policy.RequireClaim(ClaimTypes.Role, "Admin", "User"));
-});
-
-
 
 var app = builder.Build();
 
@@ -42,7 +35,6 @@ if (app.Environment.IsDevelopment())
 app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-//app.ErrorHandlerMiddleware();
 app.ConfigureCustomExceptionMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -31,6 +31,14 @@ public class UserDetailsController : BaseController
         return Ok(result);
     }
 
+    [HttpGet("userId")]
+    public async Task<IActionResult> GetByUserId(int id)
+    {
+        var data = await Mediator.Send(new GetUserDetailByUserIdQuerie(id));
+        var result = new SuccessDataResult<UserDetailDto>(data);
+        return Ok(result);
+    }
+
 
 
     [HttpPost]

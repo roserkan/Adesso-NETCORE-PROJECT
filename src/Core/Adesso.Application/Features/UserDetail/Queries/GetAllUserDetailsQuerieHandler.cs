@@ -21,9 +21,9 @@ public class GetAllUserDetailsQuerieHandler : IRequestHandler<GetAllUserDetailsQ
 
     public async Task<List<UserDetailDto>> Handle(GetAllUserDetailsQuerie request, CancellationToken cancellationToken)
     {
-        var categories = await _userDetailRepository.GetAll();
+        var userDetails = await _userDetailRepository.GetAll();
 
-        var result = _mapper.Map<List<UserDetailDto>>(categories);
+        var result = _mapper.Map<List<UserDetailDto>>(userDetails);
 
         return result;
     }

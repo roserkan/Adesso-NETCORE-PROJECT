@@ -33,12 +33,12 @@ public class CategoriesController : BaseController
     }
 
 
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateCategoryCommand command)
     {
         await Mediator.Send(command); // return type: CreatedCategoryDto
         var result = new SuccessResult(Messages.CategoryCreated);
+        // data, succces, message
         return Created("", result);
     }
 
